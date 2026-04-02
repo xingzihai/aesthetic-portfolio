@@ -219,10 +219,10 @@ function initAvatarInteraction() {
   if (prefersReducedMotion) return;
   
   // 弹簧阻尼参数
-  const spring = 0.05;
-  const damping = 0.88;
-  const maxRotateY = 20;  // 限制旋转范围，避免穿帮
-  const maxRotateX = 15;
+  const spring = 0.08;
+  const damping = 0.85;
+  const maxRotateY = 45;  // 大幅增加移动范围
+  const maxRotateX = 35;
   
   // 状态变量
   let targetX = 0, targetY = 0;
@@ -407,35 +407,41 @@ function initCustomCursor() {
   // ========== 取景框参数 ==========
   const minRadius = 60;
   const maxRadius = Math.min(window.innerWidth, window.innerHeight) * 0.4;
-  let currentRadius = minRadius;
+  
+  // 默认取景框最大，光标在屏幕中心
+  let currentRadius = maxRadius;
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  
+  // 用户是否已交互
+  let hasInteracted = false;
   
   // 右键状态
   let isRightMouseDown = false;
   
   // 呼吸动画参数
   let breathePhase = 0;
-  const breatheSpeed = 0.008; // 慢速呼吸
+  const breatheSpeed = 0.008;
   
-  // ========== 初始化光标位置 ==========
+  // ========== 初始化：光标居中，取景框最大 ==========
   cursorDot.style.left = `${mouseX}px`;
   cursorDot.style.top = `${mouseY}px`;
-  behindWorld.style.clipPath = `circle(${minRadius}px at ${mouseX}px ${mouseY}px)`;
+  behindWorld.style.clipPath = `circle(${maxRadius}px at ${mouseX}px ${mouseY}px)`;
   
   // ========== 更新取景框大小 ==========
   const updatePortalRadius = () => {
     if (isRightMouseDown) {
-      // 按住右键：正弦呼吸效果（朦胧美）
+      // 按住右键：呼吸效果
       breathePhase += breatheSpeed;
-      
-      // 使用余弦：从 minRadius 开始，到 maxRadius，再回来
-      // (1 - cos) / 2 → 0 → 1 → 0，从最小值开始
       const cosValue = (1 - Math.cos(breathePhase)) / 2;
-      
       currentRadius = minRadius + (maxRadius - minRadius) * cosValue;
-    } else {
-      // 松开右键：弹簧弹回（这个效果保留）
+    } else if (hasInteracted) {
+      // 已交互：弹回 minRadius
       const spring = 0.12;
       currentRadius += (minRadius - currentRadius) * spring;
+    } else {
+      // 未交互：保持最大
+      currentRadius = maxRadius;
     }
   };
   
@@ -446,6 +452,19 @@ function initCustomCursor() {
     requestAnimationFrame(animate);
   };
   animate();
+  
+  // ========== 用户交互检测 ==========
+  const onFirstInteraction = (e) => {
+    if (!hasInteracted) {
+      hasInteracted = true;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      // 移除一次性监听
+      document.removeEventListener('mousemove', onFirstInteraction);
+    }
+  };
+  
+  document.addEventListener('mousemove', onFirstInteraction, { passive: true });
   
   // ========== 右键事件 ==========
   document.addEventListener('mousedown', (e) => {
@@ -469,11 +488,13 @@ function initCustomCursor() {
     cursorDot.style.top = `${mouseY}px`;
   };
   
-  // 鼠标移动
+  // 鼠标移动（交互后跟随）
   document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    updateCursor();
+    if (hasInteracted) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      updateCursor();
+    }
   }, { passive: true });
   
   // 同步背后内容滚动
