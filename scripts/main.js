@@ -372,8 +372,9 @@ function initCustomCursor() {
   const cursorDot = document.querySelector('.cursor-dot');
   const behindWorld = document.querySelector('.behind-world');
   const behindContent = document.querySelector('.behind-content');
+  const surfaceWorld = document.querySelector('.surface-world');
   
-  if (!cursorDot || !behindWorld) return;
+  if (!cursorDot || !behindWorld || !behindContent || !surfaceWorld) return;
   
   // 检测触摸设备
   if ('ontouchstart' in window) {
@@ -385,6 +386,25 @@ function initCustomCursor() {
   
   // 禁用右键菜单
   document.addEventListener('contextmenu', (e) => e.preventDefault());
+  
+  // ========== 克隆表层世界到背后世界 ==========
+  const cloneSurface = () => {
+    // 清空现有内容
+    behindContent.innerHTML = '';
+    // 深度克隆表层世界
+    const clone = surfaceWorld.cloneNode(true);
+    // 移除nav的fixed定位（避免双层导航问题）
+    const nav = clone.querySelector('.site-nav');
+    if (nav) nav.style.position = 'absolute';
+    // 移除firefly容器（避免重复计算）
+    const fireflies = clone.querySelector('.firefly-container');
+    if (fireflies) fireflies.remove();
+    // 添加到背后世界
+    behindContent.appendChild(clone);
+  };
+  
+  // 初始克隆
+  cloneSurface();
   
   // 光标窗口半径
   const portalRadius = 60;
@@ -410,11 +430,9 @@ function initCustomCursor() {
     updateCursor();
   }, { passive: true });
   
-  // 同步背后内容滚动（移动内容而非clip-path容器）
+  // 同步背后内容滚动
   const syncBehindScroll = () => {
-    if (behindContent) {
-      behindContent.style.transform = `translateY(-${window.scrollY}px)`;
-    }
+    behindContent.style.transform = `translateY(-${window.scrollY}px)`;
   };
   
   window.addEventListener('scroll', syncBehindScroll, { passive: true });

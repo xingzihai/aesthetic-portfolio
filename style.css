@@ -123,11 +123,6 @@ body {
   pointer-events: none;
   z-index: 1;
   overflow: hidden;
-  /* 莫奈配色 */
-  --behind-bg: #A8C4B8;
-  --behind-text: #2A3830;
-  --behind-accent: #FFB070;
-  --behind-glow: rgba(255, 200, 160, 0.3);
   /* 默认完全隐藏 */
   clip-path: circle(0px at 50% 50%);
 }
@@ -140,84 +135,73 @@ body {
   /* 高度由内容决定，通过JS同步滚动 */
 }
 
-.behind-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: var(--space-3xl) var(--space-lg);
+/* ========== 背后世界莫奈配色覆盖 ========== */
+.behind-world,
+.behind-world * {
+  /* 莫奈配色变量覆盖 */
+  --canvas-bg: #A8C4B8;
+  --canvas-card: #D8E8E0;
+  --canvas-deep: #5A8870;
+  --canvas-light: #F0F8F4;
+  
+  --text-100: #2A3830;
+  --text-200: #4A5850;
+  --text-300: #607068;
+  --text-400: #889088;
+  --text-500: #A8B0A8;
+  
+  --monet-sunrise: #FFB070;
+  --monet-lily: #FFC8D8;
+  --monet-water: #70A8C0;
+  
+  /* 马卡龙色改为莫奈色 */
+  --muted-pink: #FFC8D8;
+  --muted-blue: #A0C8D8;
+  --muted-green: #A8D090;
+  --muted-purple: #D0B8D0;
+  --muted-yellow: #F0D090;
+  --muted-orange: #FFB070;
+}
+
+/* 背后世界背景色 */
+.behind-world .hero {
   background: linear-gradient(
     135deg,
-    rgba(168, 196, 184, 1) 0%,
-    rgba(160, 200, 216, 0.6) 50%,
-    rgba(168, 196, 184, 1) 100%
+    #A8C4B8 0%,
+    #B8D4C8 50%,
+    #A8C4B8 100%
   );
 }
 
-.behind-avatar-placeholder {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
+/* 背后世界光斑 */
+.behind-world .particle {
+  background: radial-gradient(circle, rgba(255, 176, 112, 0.4) 0%, transparent 70%);
+}
+
+/* 背后世界画廊 */
+.behind-world .gallery-section {
+  background: rgba(160, 200, 216, 0.2);
+}
+
+/* 背后世界卡片 */
+.behind-world .gallery-card {
+  background: rgba(168, 196, 184, 0.9);
+  border-color: rgba(255, 176, 112, 0.3);
+}
+
+/* 背后世界头像光晕 */
+.behind-world .avatar-glow,
+.behind-world .avatar-aura {
   background: radial-gradient(
-    circle at 30% 30%,
-    var(--behind-accent) 0%,
-    rgba(255, 200, 160, 0.4) 50%,
-    transparent 70%
+    circle,
+    rgba(255, 176, 112, 0.15) 0%,
+    transparent 60%
   );
-  margin-bottom: var(--space-xl);
-  animation: behind-pulse 4s ease-in-out infinite;
 }
 
-@keyframes behind-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.05); opacity: 1; }
-}
-
-.behind-hero .hero-name {
-  color: var(--behind-text);
-  font-family: var(--font-display);
-  font-size: 56px;
-  font-weight: 700;
-}
-
-.behind-hero .hero-tagline {
-  color: rgba(42, 56, 48, 0.7);
-  font-size: 20px;
-  margin-top: var(--space-sm);
-}
-
-.behind-gallery {
-  padding: var(--space-4xl) var(--space-lg);
-  min-height: 100vh;
-  background: rgba(160, 200, 216, 0.3);
-}
-
-.behind-gallery .section-title {
-  color: var(--behind-text);
-  text-align: center;
-  font-family: var(--font-display);
-  font-size: 36px;
-  margin-bottom: var(--space-xl);
-}
-
-.behind-gallery .gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-lg);
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.gallery-card-placeholder {
-  height: 200px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 176, 112, 0.3) 0%,
-    rgba(255, 200, 216, 0.2) 100%
-  );
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(255, 176, 112, 0.2);
+/* 背后世界萤火虫 */
+.behind-world .firefly-container {
+  display: none;
 }
 
 /* ========== 自定义光标 ========== */
