@@ -329,7 +329,7 @@ body {
   display: none;
 }
 
-/* ========== 背后世界头像 - 朦胧太阳 ========== */
+/* ========== 背后世界头像 - 朦胧太阳（第一版效果） ========== */
 /* 隐藏克隆的六棱柱 */
 .behind-world .avatar-crystal-wrapper {
   display: none;
@@ -339,77 +339,39 @@ body {
   display: none;
 }
 
-/* 朦胧太阳效果 */
+.behind-world .avatar-core {
+  display: none;
+}
+
+/* 朦胧太阳 */
 .behind-world .avatar-container::before {
   content: '';
   position: absolute;
-  width: 160px;
-  height: 160px;
+  width: 180px;
+  height: 180px;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  /* 朦胧太阳核心 */
   background: radial-gradient(
-    circle at 40% 40%,
-    rgba(255, 240, 200, 0.95) 0%,
-    rgba(255, 220, 160, 0.8) 20%,
-    rgba(255, 176, 112, 0.6) 45%,
-    rgba(255, 160, 80, 0.3) 70%,
-    transparent 100%
+    circle at 30% 30%,
+    #FFB070 0%,
+    rgba(255, 200, 160, 0.4) 50%,
+    transparent 70%
   );
-  /* 光芒扩散 */
-  box-shadow: 
-    0 0 60px rgba(255, 200, 120, 0.5),
-    0 0 100px rgba(255, 176, 112, 0.3),
-    0 0 140px rgba(255, 160, 80, 0.15);
-  animation: sun-pulse 4s ease-in-out infinite;
+  animation: behind-sun-pulse 4s ease-in-out infinite;
   z-index: 10;
 }
 
-/* 太阳核心亮点 */
-.behind-world .avatar-container::after {
-  content: '';
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgba(255, 255, 240, 1) 0%,
-    rgba(255, 250, 220, 0.9) 30%,
-    rgba(255, 240, 200, 0.5) 60%,
-    transparent 100%
-  );
-  animation: sun-core-pulse 3s ease-in-out infinite;
-  z-index: 11;
-}
-
-@keyframes sun-pulse {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.9;
-    box-shadow: 
-      0 0 60px rgba(255, 200, 120, 0.5),
-      0 0 100px rgba(255, 176, 112, 0.3),
-      0 0 140px rgba(255, 160, 80, 0.15);
+@keyframes behind-sun-pulse {
+  0%, 100% { 
+    transform: translate(-50%, -50%) scale(1); 
+    opacity: 0.8; 
   }
-  50% {
-    transform: translate(-50%, -50%) scale(1.08);
-    opacity: 1;
-    box-shadow: 
-      0 0 80px rgba(255, 200, 120, 0.6),
-      0 0 120px rgba(255, 176, 112, 0.4),
-      0 0 160px rgba(255, 160, 80, 0.2);
+  50% { 
+    transform: translate(-50%, -50%) scale(1.05); 
+    opacity: 1; 
   }
-}
-
-@keyframes sun-core-pulse {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.95; }
-  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
 }
 
 /* ========== 自定义光标 ========== */
