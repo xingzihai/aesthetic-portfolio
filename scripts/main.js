@@ -426,6 +426,7 @@ function initCustomCursor() {
   // ========== 初始化：光标居中，取景框最大 ==========
   cursorDot.style.left = `${mouseX}px`;
   cursorDot.style.top = `${mouseY}px`;
+  cursorDot.style.opacity = '1';
   behindWorld.style.clipPath = `circle(${maxRadius}px at ${mouseX}px ${mouseY}px)`;
   
   // ========== 更新取景框大小 ==========
@@ -530,11 +531,9 @@ function initCustomCursor() {
   // 鼠标离开窗口
   document.addEventListener('mouseleave', () => {
     cursorDot.style.opacity = '0';
-    behindWorld.style.clipPath = 'circle(0px at 50% 50%)';
   });
   document.addEventListener('mouseenter', () => {
     cursorDot.style.opacity = '1';
-    updateCursor();
   });
   
   // 初始化
