@@ -1,0 +1,140 @@
+/* ========================================
+   Monet Impressionist Palette System
+   CSS Variables · 背后世界配色
+   莫奈主导 + 莫兰迪中和
+   ======================================== */
+
+:root {
+  /* ========== 背景色层级 (Background Scale) ========== */
+  /* 睡莲水面系列 - 更饱和、更生动 */
+  --bg-100: #F0F8F4;         /* 最浅背景 - 晨雾水面 */
+  --bg-200: #D8E8E0;         /* 次级背景 - 浅水倒影 */
+  --bg-300: #A8C4B8;         /* 主背景 - 睡莲水面 */
+  --bg-400: #7AA890;         /* 深背景 - 深水区域 */
+  --bg-500: #5A8870;         /* 最深背景 - 池塘深处 */
+  
+  /* ========== 文字色层级 (Text Scale) ========== */
+  --text-100: #2A3830;       /* 主标题 - 深水绿 */
+  --text-200: #4A5850;       /* 次标题 - 水草绿 */
+  --text-300: #607068;       /* 正文 - 水面灰绿 */
+  --text-400: #889088;       /* 辅助文字 - 水雾灰 */
+  --text-500: #A8B0A8;       /* 最弱文字 - 晨雾 */
+  --text-inverse: #E8F0E8;   /* 反色文字 - 浅水泡沫 */
+  
+  /* ========== 日出橙系家族 (Sunrise Orange Family) ========== */
+  /* 莫奈《日出·印象》核心色 */
+  --sunrise-100: #FFE8D0;    /* 晨曦浅橙 - 天空边缘 */
+  --sunrise-200: #FFD0A0;    /* 日出橙 - 光芒 */
+  --sunrise-300: #FFB070;    /* 日出核心橙 - 太阳 */
+  --sunrise-400: #FF8840;    /* 深日出橙 - 强调 */
+  --sunrise-500: #E86020;    /* 日落红橙 - 焦点 */
+  
+  /* ========== 睡莲粉系家族 (Water Lily Pink Family) ========== */
+  /* 莫奈《睡莲》系列核心色 */
+  --lily-100: #FFE8F0;       /* 花瓣浅粉 - 初绽 */
+  --lily-200: #FFC8D8;       /* 睡莲粉 - 盛开 */
+  --lily-300: #FFA0B8;       /* 睡莲中粉 - 层叠 */
+  --lily-400: #E87898;       /* 睡莲深粉 - 花心 */
+  --lily-500: #C85078;       /* 睡莲玫红 - 强调 */
+  
+  /* ========== 水面蓝系家族 (Water Surface Blue Family) ========== */
+  /* 莫奈水面倒影系列 */
+  --water-100: #D0E8F0;      /* 浅水天光 - 天空倒影 */
+  --water-200: #A0C8D8;      /* 水面蓝 - 基调 */
+  --water-300: #70A8C0;      /* 水面中蓝 - 层次 */
+  --water-400: #4888A0;      /* 水面深蓝 - 深处 */
+  --water-500: #286880;      /* 水底蓝 - 焦点 */
+  
+  /* ========== 雾霾紫系家族 (Mist Purple Family) ========== */
+  /* 莫奈黄昏系列 */
+  --mist-100: #E8D8E8;       /* 晨雾浅紫 - 天边 */
+  --mist-200: #D0B8D0;       /* 雾霾紫 - 氛围 */
+  --mist-300: #B090B0;       /* 雾霾中紫 - 层次 */
+  --mist-400: #907090;       /* 雾霾深紫 - 强调 */
+  --mist-500: #705070;       /* 黄昏紫 - 焦点 */
+  
+  /* ========== 草地绿系家族 (Meadow Green Family) ========== */
+  /* 莫奈花园系列 */
+  --meadow-100: #D8E8C8;     /* 草地浅绿 - 春日 */
+  --meadow-200: #A8D090;     /* 草地绿 - 基调 */
+  --meadow-300: #78B060;     /* 草地中绿 - 层次 */
+  --meadow-400: #589038;     /* 草地深绿 - 强调 */
+  --meadow-500: #387018;     /* 树林绿 - 焦点 */
+  
+  /* ========== 黄昏金系家族 (Twilight Gold Family) ========== */
+  /* 莫奈日落系列 */
+  --twilight-100: #F8E8C8;   /* 黄昏浅金 - 天边 */
+  --twilight-200: #F0D090;   /* 黄昏金 - 光芒 */
+  --twilight-300: #E0B060;   /* 黄昏中金 - 暖光 */
+  --twilight-400: #D09030;   /* 黄昏深金 - 强调 */
+  --twilight-500: #B07010;   /* 日落金 - 焦点 */
+  
+  /* ========== 莫兰迪中和色 (Morandi Neutralizers) ========== */
+  /* 用于中和过高饱和度 */
+  --neutral-pink: #D8C8C0;   /* 灰粉中和 */
+  --neutral-blue: #B8C0C8;   /* 灰蓝中和 */
+  --neutral-green: #C0C8B8;  /* 灰绿中和 */
+  --neutral-purple: #C8C0C8; /* 灰紫中和 */
+  
+  /* ========== 功能状态色 (Status Colors) ========== */
+  --status-success: #78B060;
+  --status-success-bg: #E8F0E0;
+  --status-warning: #F0D090;
+  --status-warning-bg: #F8F0E0;
+  --status-error: #E89090;
+  --status-error-bg: #F8E8E8;
+  --status-info: #70A8C0;
+  --status-info-bg: #E8F0F8;
+  
+  /* ========== 光影系统 (Light & Shadow) ========== */
+  /* 莫奈核心：光的变化 */
+  --light-sunrise: rgba(255, 200, 160, 0.15);  /* 日出光 */
+  --light-midday: rgba(255, 255, 240, 0.10);   /* 正午光 */
+  --light-sunset: rgba(255, 180, 140, 0.20);   /* 日落光 */
+  --light-twilight: rgba(200, 160, 200, 0.15); /* 黄昏光 */
+  
+  /* ========== 边框与分隔线 ========== */
+  --border-soft: rgba(112, 168, 144, 0.20);
+  --border-medium: rgba(112, 168, 144, 0.35);
+  --border-strong: rgba(42, 56, 48, 0.25);
+  
+  /* ========== 阴影系统 ========== */
+  /* 更柔和、更大范围的阴影（印象派模糊边界） */
+  --shadow-xs: 0 2px 8px rgba(42, 56, 48, 0.06);
+  --shadow-sm: 0 4px 16px rgba(42, 56, 48, 0.08);
+  --shadow-md: 0 8px 32px rgba(42, 56, 48, 0.10);
+  --shadow-lg: 0 16px 48px rgba(42, 56, 48, 0.12);
+  --shadow-xl: 0 24px 64px rgba(42, 56, 48, 0.15);
+  
+  /* ========== 光斑效果 (Light Spots) ========== */
+  --spot-warm: radial-gradient(circle, rgba(255, 200, 160, 0.30) 0%, transparent 70%);
+  --spot-cool: radial-gradient(circle, rgba(160, 200, 216, 0.25) 0%, transparent 70%);
+  --spot-pink: radial-gradient(circle, rgba(255, 200, 216, 0.25) 0%, transparent 70%);
+  
+  /* ========== 间距系统 (8px Grid) ========== */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+  --space-2xl: 64px;
+  --space-3xl: 80px;
+  
+  /* ========== 圆角系统 ========== */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  
+  /* ========== 过渡动画 ========== */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-fluid: cubic-bezier(0.23, 1, 0.32, 1); /* 流动感 */
+  --transition-fast: 150ms;
+  --transition-base: 250ms;
+  --transition-slow: 400ms;
+  --transition-fluid: 600ms; /* 光影流动 */
+}

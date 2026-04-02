@@ -1,0 +1,147 @@
+{
+  "name": "Monet Impressionist Palette",
+  "description": "莫奈印象派配色系统 - 背后世界",
+  "version": "1.0.0",
+  "philosophy": {
+    "primary": "莫奈印象派（光影、瞬时、自然）",
+    "secondary": "莫兰迪中和（沉静、永恒、克制）",
+    "concept": "睡莲水面、日出光芒、黄昏雾霭"
+  },
+  "colors": {
+    "background": {
+      "name": "睡莲水面系列",
+      "description": "莫奈《睡莲》系列水面色调",
+      "scale": [
+        { "level": 100, "hex": "#F0F8F4", "name": "晨雾水面", "usage": "最浅背景" },
+        { "level": 200, "hex": "#D8E8E0", "name": "浅水倒影", "usage": "次级背景" },
+        { "level": 300, "hex": "#A8C4B8", "name": "睡莲水面", "usage": "主背景" },
+        { "level": 400, "hex": "#7AA890", "name": "深水区域", "usage": "深背景" },
+        { "level": 500, "hex": "#5A8870", "name": "池塘深处", "usage": "最深背景" }
+      ]
+    },
+    "text": {
+      "name": "水草文字系列",
+      "scale": [
+        { "level": 100, "hex": "#2A3830", "usage": "主标题" },
+        { "level": 200, "hex": "#4A5850", "usage": "次标题" },
+        { "level": 300, "hex": "#607068", "usage": "正文" },
+        { "level": 400, "hex": "#889088", "usage": "辅助文字" },
+        { "level": 500, "hex": "#A8B0A8", "usage": "最弱文字" }
+      ]
+    },
+    "families": [
+      {
+        "name": "日出橙",
+        "id": "sunrise",
+        "source": "莫奈《日出·印象》",
+        "scale": [
+          { "level": 100, "hex": "#FFE8D0", "name": "晨曦浅橙" },
+          { "level": 200, "hex": "#FFD0A0", "name": "日出橙" },
+          { "level": 300, "hex": "#FFB070", "name": "日出核心" },
+          { "level": 400, "hex": "#FF8840", "name": "深日出橙" },
+          { "level": 500, "hex": "#E86020", "name": "日落红橙" }
+        ],
+        "usage": "强调、按钮、高光"
+      },
+      {
+        "name": "睡莲粉",
+        "id": "lily",
+        "source": "莫奈《睡莲》系列",
+        "scale": [
+          { "level": 100, "hex": "#FFE8F0", "name": "花瓣浅粉" },
+          { "level": 200, "hex": "#FFC8D8", "name": "睡莲粉" },
+          { "level": 300, "hex": "#FFA0B8", "name": "睡莲中粉" },
+          { "level": 400, "hex": "#E87898", "name": "睡莲深粉" },
+          { "level": 500, "hex": "#C85078", "name": "睡莲玫红" }
+        ],
+        "usage": "装饰、柔和强调、头像光晕"
+      },
+      {
+        "name": "水面蓝",
+        "id": "water",
+        "source": "莫奈水面倒影",
+        "scale": [
+          { "level": 100, "hex": "#D0E8F0", "name": "浅水天光" },
+          { "level": 200, "hex": "#A0C8D8", "name": "水面蓝" },
+          { "level": 300, "hex": "#70A8C0", "name": "水面中蓝" },
+          { "level": 400, "hex": "#4888A0", "name": "水面深蓝" },
+          { "level": 500, "hex": "#286880", "name": "水底蓝" }
+        ],
+        "usage": "链接、信息、冷静区域"
+      },
+      {
+        "name": "雾霾紫",
+        "id": "mist",
+        "source": "莫奈黄昏系列",
+        "scale": [
+          { "level": 100, "hex": "#E8D8E8", "name": "晨雾浅紫" },
+          { "level": 200, "hex": "#D0B8D0", "name": "雾霾紫" },
+          { "level": 300, "hex": "#B090B0", "name": "雾霾中紫" },
+          { "level": 400, "hex": "#907090", "name": "雾霾深紫" },
+          { "level": 500, "hex": "#705070", "name": "黄昏紫" }
+        ],
+        "usage": "神秘感、阴影、深度"
+      },
+      {
+        "name": "草地绿",
+        "id": "meadow",
+        "source": "莫奈花园系列",
+        "scale": [
+          { "level": 100, "hex": "#D8E8C8", "name": "草地浅绿" },
+          { "level": 200, "hex": "#A8D090", "name": "草地绿" },
+          { "level": 300, "hex": "#78B060", "name": "草地中绿" },
+          { "level": 400, "hex": "#589038", "name": "草地深绿" },
+          { "level": 500, "hex": "#387018", "name": "树林绿" }
+        ],
+        "usage": "成功状态、自然元素"
+      },
+      {
+        "name": "黄昏金",
+        "id": "twilight",
+        "source": "莫奈日落系列",
+        "scale": [
+          { "level": 100, "hex": "#F8E8C8", "name": "黄昏浅金" },
+          { "level": 200, "hex": "#F0D090", "name": "黄昏金" },
+          { "level": 300, "hex": "#E0B060", "name": "黄昏中金" },
+          { "level": 400, "hex": "#D09030", "name": "黄昏深金" },
+          { "level": 500, "hex": "#B07010", "name": "日落金" }
+        ],
+        "usage": "温暖、辉煌、特殊强调"
+      }
+    ],
+    "neutralizers": {
+      "name": "莫兰迪中和色",
+      "description": "用于中和过高的饱和度",
+      "colors": [
+        { "id": "neutral-pink", "hex": "#D8C8C0" },
+        { "id": "neutral-blue", "hex": "#B8C0C8" },
+        { "id": "neutral-green", "hex": "#C0C8B8" },
+        { "id": "neutral-purple", "hex": "#C8C0C8" }
+      ]
+    },
+    "lightEffects": {
+      "name": "光影效果",
+      "description": "莫奈核心：光的变化",
+      "types": [
+        { "id": "light-sunrise", "value": "rgba(255, 200, 160, 0.15)", "name": "日出光" },
+        { "id": "light-midday", "value": "rgba(255, 255, 240, 0.10)", "name": "正午光" },
+        { "id": "light-sunset", "value": "rgba(255, 180, 140, 0.20)", "name": "日落光" },
+        { "id": "light-twilight", "value": "rgba(200, 160, 200, 0.15)", "name": "黄昏光" }
+      ]
+    }
+  },
+  "comparison": {
+    "surface": {
+      "name": "表层（莫兰迪主导）",
+      "bg-primary": "#E8DFD6",
+      "accent-primary": "#FFB088",
+      "mood": "沉静、克制、永恒"
+    },
+    "behind": {
+      "name": "背后（莫奈主导）",
+      "bg-primary": "#A8C4B8",
+      "accent-primary": "#FFB070",
+      "mood": "生动、流动、瞬时"
+    }
+  }
+}
