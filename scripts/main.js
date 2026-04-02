@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSmoothScroll();
   initAvatarInteraction();
   initFireflies();
+  initCustomCursor();
 });
 
 /* ========================================
@@ -363,6 +364,85 @@ if (process?.env?.NODE_ENV === 'development') {
    导出（如果需要模块化）
    ======================================== */
 // export { initScrollProgress, initNavScroll, initMobileNav, initScrollAnimations };
+
+/* ========================================
+   自定义光标系统
+   ======================================== */
+function initCustomCursor() {
+  const cursorDot = document.querySelector('.cursor-dot');
+  if (!cursorDot) return;
+  
+  // 检测触摸设备
+  if ('ontouchstart' in window) {
+    cursorDot.style.display = 'none';
+    document.body.style.cursor = 'auto';
+    return;
+  }
+  
+  // 光标位置
+  let mouseX = 0;
+  let mouseY = 0;
+  let currentX = 0;
+  let currentY = 0;
+  
+  // 弹簧参数
+  const spring = 0.15;
+  const damping = 0.75;
+  let vx = 0;
+  let vy = 0;
+  
+  // 监听鼠标移动
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  }, { passive: true });
+  
+  // 检测悬停元素
+  const interactiveElements = document.querySelectorAll('a, button, .nav-toggle, .gallery-card, input, textarea');
+  
+  interactiveElements.forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursorDot.classList.add('hover');
+    });
+    el.addEventListener('mouseleave', () => {
+      cursorDot.classList.remove('hover');
+    });
+  });
+  
+  // 点击状态
+  document.addEventListener('mousedown', () => {
+    cursorDot.classList.add('clicking');
+  });
+  document.addEventListener('mouseup', () => {
+    cursorDot.classList.remove('clicking');
+  });
+  
+  // 动画循环
+  const animate = () => {
+    // 弹簧物理
+    const dx = mouseX - currentX;
+    const dy = mouseY - currentY;
+    
+    vx += dx * spring;
+    vy += dy * spring;
+    vx *= damping;
+    vy *= damping;
+    
+    currentX += vx;
+    currentY += vy;
+    
+    // 应用位置
+    cursorDot.style.left = `${currentX}px`;
+    cursorDot.style.top = `${currentY}px`;
+    
+    requestAnimationFrame(animate);
+  };
+  
+  // 初始化位置
+  currentX = mouseX;
+  currentY = mouseY;
+  animate();
+}
 
 /* ========================================
    萤火虫粒子（外部自主飞行 + JS控制闪烁）
