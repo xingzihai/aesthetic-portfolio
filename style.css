@@ -153,53 +153,178 @@ body {
   --monet-sunrise: #FFB070;
   --monet-lily: #FFC8D8;
   --monet-water: #70A8C0;
-  
-  /* 马卡龙色改为莫奈色 */
-  --muted-pink: #FFC8D8;
-  --muted-blue: #A0C8D8;
-  --muted-green: #A8D090;
-  --muted-purple: #D0B8D0;
-  --muted-yellow: #F0D090;
-  --muted-orange: #FFB070;
 }
 
-/* 背后世界背景色 */
+/* ========== 背后世界背景 - 莫奈水面渐变 ========== */
 .behind-world .hero {
-  background: linear-gradient(
-    135deg,
-    #A8C4B8 0%,
-    #B8D4C8 50%,
-    #A8C4B8 100%
-  );
+  background: 
+    radial-gradient(ellipse 120% 80% at 30% 20%, rgba(255, 176, 112, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 100% at 70% 80%, rgba(255, 200, 216, 0.2) 0%, transparent 40%),
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(160, 200, 216, 0.3) 0%, transparent 60%),
+    linear-gradient(135deg, #A8C4B8 0%, #B8D4C8 30%, #A0C8B8 70%, #90B8A8 100%);
+  animation: behind-bg-flow 20s ease-in-out infinite;
 }
 
-/* 背后世界光斑 */
+@keyframes behind-bg-flow {
+  0%, 100% { background-position: 0% 0%, 100% 100%, 50% 50%, 0% 0%; }
+  50% { background-position: 100% 100%, 0% 0%, 50% 50%, 0% 0%; }
+}
+
+/* ========== 背后世界光斑 - 莫奈笔触 ========== */
 .behind-world .particle {
-  background: radial-gradient(circle, rgba(255, 176, 112, 0.4) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 176, 112, 0.5) 0%, rgba(255, 200, 160, 0.3) 40%, transparent 70%);
+  filter: blur(25px);
+  animation: behind-particle-glow 8s ease-in-out infinite;
 }
 
-/* 背后世界画廊 */
-.behind-world .gallery-section {
-  background: rgba(160, 200, 216, 0.2);
+.behind-world .particle.p1 { animation-delay: 0s; }
+.behind-world .particle.p2 { animation-delay: -1.6s; }
+.behind-world .particle.p3 { animation-delay: -3.2s; }
+.behind-world .particle.p4 { animation-delay: -4.8s; }
+.behind-world .particle.p5 { animation-delay: -6.4s; }
+
+@keyframes behind-particle-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.3); }
 }
 
-/* 背后世界卡片 */
-.behind-world .gallery-card {
-  background: rgba(168, 196, 184, 0.9);
-  border-color: rgba(255, 176, 112, 0.3);
+/* ========== 背后世界头像 - 日出核心 ========== */
+.behind-world .avatar-container {
+  /* 整体发光 */
+  filter: drop-shadow(0 0 30px rgba(255, 176, 112, 0.4));
 }
 
-/* 背后世界头像光晕 */
-.behind-world .avatar-glow,
 .behind-world .avatar-aura {
   background: radial-gradient(
     circle,
-    rgba(255, 176, 112, 0.15) 0%,
+    rgba(255, 176, 112, 0.3) 0%,
+    rgba(255, 200, 160, 0.15) 40%,
+    transparent 70%
+  );
+  animation: behind-aura-pulse 4s ease-in-out infinite;
+}
+
+@keyframes behind-aura-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}
+
+.behind-world .avatar-glow {
+  background: radial-gradient(
+    circle,
+    rgba(255, 220, 180, 0.25) 0%,
+    rgba(255, 200, 160, 0.15) 30%,
+    transparent 50%
+  );
+  animation: behind-glow-pulse 6s ease-in-out infinite;
+}
+
+@keyframes behind-glow-pulse {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* ========== 背后世界六棱柱 - 日出光芒 ========== */
+.behind-world .crystal-face.f1 {
+  background: linear-gradient(160deg, rgba(255, 220, 180, 0.6) 0%, rgba(255, 176, 112, 0.4) 50%, rgba(255, 160, 100, 0.25) 100%);
+  border-color: rgba(255, 176, 112, 0.5);
+  box-shadow: inset 0 0 40px rgba(255, 200, 160, 0.3);
+}
+
+.behind-world .crystal-face.f2,
+.behind-world .crystal-face.f3 {
+  background: linear-gradient(160deg, rgba(255, 200, 216, 0.5) 0%, rgba(255, 176, 192, 0.35) 50%, rgba(255, 160, 180, 0.2) 100%);
+  border-color: rgba(255, 200, 216, 0.45);
+}
+
+.behind-world .crystal-face.f4,
+.behind-world .crystal-face.f5,
+.behind-world .crystal-face.f6 {
+  background: linear-gradient(200deg, rgba(160, 200, 216, 0.45) 0%, rgba(140, 180, 200, 0.3) 50%, rgba(120, 160, 180, 0.15) 100%);
+  border-color: rgba(160, 200, 216, 0.4);
+}
+
+.behind-world .avatar-core .core-inner {
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(255, 240, 200, 0.9) 0%,
+    rgba(255, 200, 160, 0.6) 40%,
+    rgba(255, 176, 112, 0.3) 70%,
+    transparent 100%
+  );
+  animation: behind-core-pulse 3s ease-in-out infinite;
+}
+
+@keyframes behind-core-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* ========== 背后世界文字 - 深水绿 ========== */
+.behind-world .hero-name {
+  color: #2A3830;
+  text-shadow: 0 0 40px rgba(255, 176, 112, 0.3);
+}
+
+.behind-world .hero-name-cn {
+  color: #4A5850;
+}
+
+.behind-world .hero-tagline {
+  color: rgba(42, 56, 48, 0.7);
+}
+
+/* ========== 背后世界画廊 ========== */
+.behind-world .gallery-section {
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% 30%, rgba(160, 200, 216, 0.25) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(168, 196, 184, 0.95) 0%, rgba(160, 200, 216, 0.3) 100%);
+}
+
+.behind-world .section-title {
+  color: #2A3830;
+  text-shadow: 0 0 30px rgba(255, 176, 112, 0.2);
+}
+
+/* ========== 背后世界卡片 - 莫奈光影 ========== */
+.behind-world .gallery-card {
+  background: linear-gradient(
+    135deg,
+    rgba(168, 196, 184, 0.95) 0%,
+    rgba(184, 212, 200, 0.9) 50%,
+    rgba(168, 196, 184, 0.95) 100%
+  );
+  border-color: rgba(255, 176, 112, 0.35);
+  box-shadow: 
+    0 4px 20px rgba(42, 56, 48, 0.1),
+    inset 0 0 60px rgba(255, 220, 180, 0.08);
+}
+
+.behind-world .gallery-card:hover {
+  border-color: rgba(255, 176, 112, 0.6);
+  box-shadow: 
+    0 8px 32px rgba(42, 56, 48, 0.15),
+    0 0 30px rgba(255, 176, 112, 0.2),
+    inset 0 0 60px rgba(255, 220, 180, 0.12);
+}
+
+.behind-world .card-inner-glow {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 220, 180, 0.15) 0%,
     transparent 60%
   );
 }
 
-/* 背后世界萤火虫 */
+.behind-world .card-title {
+  color: #2A3830;
+}
+
+.behind-world .card-desc {
+  color: #4A5850;
+}
+
+/* ========== 背后世界萤火虫隐藏 ========== */
 .behind-world .firefly-container {
   display: none;
 }
