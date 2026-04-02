@@ -399,13 +399,14 @@ function initFireflies() {
     // 状态初始化
     const containerSize = 500;
     
-    // 初始位置：随机分布在容器内（避开中心头像区域）
-    let x, y;
-    const distFromCenter = () => Math.sqrt(x * x + y * y);
-    do {
-      x = (Math.random() - 0.5) * containerSize;
-      y = (Math.random() - 0.5) * containerSize;
-    } while (distFromCenter() < 80);
+    // 初始位置：均匀分布在中心周围（使用极坐标确保均匀）
+    const angle = Math.random() * Math.PI * 2; // 随机角度
+    const minRadius = 80; // 最小距离（避开中心头像）
+    const maxRadius = containerSize / 2 - 20; // 最大距离
+    const radius = minRadius + Math.random() * (maxRadius - minRadius); // 随机半径
+    
+    const x = Math.cos(angle) * radius;
+    const y = Math.sin(angle) * radius;
     
     // 闪烁参数：每个萤火虫独立周期
     const glowCycle = 2000 + Math.random() * 3000; // 2-5秒周期

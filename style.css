@@ -393,10 +393,10 @@ body {
    动态头像 - 完整优化版
    ======================================== */
 .avatar-container {
-  width: 220px;
-  height: 220px;
+  width: 520px;
+  height: 520px;
   position: relative;
-  perspective: 600px; /* 增强立体感 */
+  perspective: 600px;
   cursor: default;
   transform-style: preserve-3d;
 }
