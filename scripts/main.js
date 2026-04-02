@@ -427,16 +427,15 @@ function initCustomCursor() {
       // 按住右键：正弦呼吸效果（朦胧美）
       breathePhase += breatheSpeed;
       
-      // 正弦波：0 → 1 → 0 → 1 → ...
-      const sinValue = (Math.sin(breathePhase) + 1) / 2;
+      // 使用余弦：从 minRadius 开始，到 maxRadius，再回来
+      // (1 - cos) / 2 → 0 → 1 → 0，从最小值开始
+      const cosValue = (1 - Math.cos(breathePhase)) / 2;
       
-      // 从 minRadius 到 maxRadius 的柔和变化
-      currentRadius = minRadius + (maxRadius - minRadius) * sinValue;
+      currentRadius = minRadius + (maxRadius - minRadius) * cosValue;
     } else {
       // 松开右键：弹簧弹回（这个效果保留）
       const spring = 0.12;
       currentRadius += (minRadius - currentRadius) * spring;
-      breathePhase = 0; // 重置相位
     }
   };
   
@@ -452,6 +451,9 @@ function initCustomCursor() {
   document.addEventListener('mousedown', (e) => {
     if (e.button === 2) { // 右键
       isRightMouseDown = true;
+      // 重置：从初始大小开始动画
+      currentRadius = minRadius;
+      breathePhase = 0;
     }
   });
   
