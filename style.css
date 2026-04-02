@@ -89,8 +89,8 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
-  /* Scroll Snap - 浏览器原生，速度快但稳定 */
-  scroll-snap-type: y mandatory;
+  /* Scroll Snap - proximity 模式：接近时吸附，可自由停在中间 */
+  scroll-snap-type: y proximity;
 }
 
 body {
