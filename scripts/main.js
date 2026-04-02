@@ -387,9 +387,26 @@ function initCustomCursor() {
   // 禁用右键菜单
   document.addEventListener('contextmenu', (e) => e.preventDefault());
   
-  // ========== 鼠标位置（必须先初始化） ==========
+  // ========== 取景框参数 ==========
+  const minRadius = 60;
+  const maxRadius = Math.min(window.innerWidth, window.innerHeight) * 0.4;
+  
+  // 鼠标位置（初始化在屏幕中心）
   let mouseX = window.innerWidth / 2;
   let mouseY = window.innerHeight / 2;
+  
+  // 默认取景框最大
+  let currentRadius = maxRadius;
+  
+  // 用户是否已交互
+  let hasInteracted = false;
+  
+  // 右键状态
+  let isRightMouseDown = false;
+  
+  // 呼吸动画参数
+  let breathePhase = 0;
+  const breatheSpeed = 0.008;
   
   // ========== 克隆表层世界到背后世界 ==========
   const cloneSurface = () => {
@@ -403,25 +420,6 @@ function initCustomCursor() {
   };
   
   cloneSurface();
-  
-  // ========== 取景框参数 ==========
-  const minRadius = 60;
-  const maxRadius = Math.min(window.innerWidth, window.innerHeight) * 0.4;
-  
-  // 默认取景框最大，光标在屏幕中心
-  let currentRadius = maxRadius;
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
-  
-  // 用户是否已交互
-  let hasInteracted = false;
-  
-  // 右键状态
-  let isRightMouseDown = false;
-  
-  // 呼吸动画参数
-  let breathePhase = 0;
-  const breatheSpeed = 0.008;
   
   // ========== 初始化：光标居中，取景框最大 ==========
   cursorDot.style.left = `${mouseX}px`;

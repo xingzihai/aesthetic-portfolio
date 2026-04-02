@@ -616,7 +616,7 @@ body {
   position: fixed;
   width: 8px;
   height: 8px;
-  background: var(--behind-accent, #FFB070);
+  background: #FFB070;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
