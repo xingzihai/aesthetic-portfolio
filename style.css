@@ -89,13 +89,8 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
-  /* Scroll Snap - 默认启用，JS会动态控制 */
+  /* Scroll Snap - 纯 CSS mandatory 模式 */
   scroll-snap-type: y mandatory;
-}
-
-/* 禁用 Scroll Snap（站内滚动时使用） */
-html.snap-disabled {
-  scroll-snap-type: none;
 }
 
 body {
