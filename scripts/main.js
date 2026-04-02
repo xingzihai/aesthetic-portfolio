@@ -379,6 +379,11 @@ function initCustomCursor() {
     return;
   }
   
+  // 禁用右键菜单
+  document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+  });
+  
   // 直接跟随鼠标（无弹簧延迟）
   document.addEventListener('mousemove', (e) => {
     cursorDot.style.left = `${e.clientX}px`;
