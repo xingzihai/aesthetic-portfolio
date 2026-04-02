@@ -91,7 +91,6 @@ html {
   font-size: 16px;
   /* Scroll Snap - 默认启用，JS会动态控制 */
   scroll-snap-type: y mandatory;
-  overflow-y: scroll;
 }
 
 /* 禁用 Scroll Snap（站内滚动时使用） */
@@ -249,7 +248,6 @@ body {
   padding: var(--space-3xl) var(--space-lg);
   /* Scroll Snap */
   scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 /* 背景光影流动 */
@@ -840,7 +838,6 @@ body {
   /* Scroll Snap */
   min-height: 100vh;
   scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 .gallery-grid {
@@ -1177,7 +1174,6 @@ body {
   /* Scroll Snap */
   min-height: 100vh;
   scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 .philosophy-bg {
@@ -1247,7 +1243,6 @@ body {
   /* Scroll Snap */
   min-height: 100vh;
   scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 .skills-grid {
@@ -1329,6 +1324,9 @@ body {
   padding: var(--space-4xl) var(--space-lg);
   position: relative;
   overflow: hidden;
+  /* Scroll Snap */
+  min-height: 100vh;
+  scroll-snap-align: start;
 }
 
 .footer-fade-top {
