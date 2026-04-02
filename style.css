@@ -393,8 +393,8 @@ body {
    动态头像 - 完整优化版
    ======================================== */
 .avatar-container {
-  width: 520px;
-  height: 520px;
+  width: 220px;
+  height: 220px;
   position: relative;
   perspective: 600px;
   cursor: default;
@@ -668,6 +668,7 @@ body {
 
 /* ========================================
    萤火虫粒子（外部）
+   定位在头像周围，不影响布局
    ======================================== */
 .firefly-container {
   position: absolute;
