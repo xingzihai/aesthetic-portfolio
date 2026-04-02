@@ -389,38 +389,87 @@ function initCustomCursor() {
   
   // ========== 克隆表层世界到背后世界 ==========
   const cloneSurface = () => {
-    // 清空现有内容
     behindContent.innerHTML = '';
-    // 深度克隆表层世界
     const clone = surfaceWorld.cloneNode(true);
-    // 移除nav的fixed定位（避免双层导航问题）
     const nav = clone.querySelector('.site-nav');
     if (nav) nav.style.position = 'absolute';
-    // 移除firefly容器（避免重复计算）
     const fireflies = clone.querySelector('.firefly-container');
     if (fireflies) fireflies.remove();
-    // 添加到背后世界
     behindContent.appendChild(clone);
   };
   
-  // 初始克隆
   cloneSurface();
   
-  // 光标窗口半径
-  const portalRadius = 60;
+  // ========== 取景框参数 ==========
+  const minRadius = 60;
+  const maxRadius = Math.min(window.innerWidth, window.innerHeight) * 0.4; // 40%页面
+  let currentRadius = minRadius;
+  let targetRadius = minRadius;
   
-  // 当前鼠标位置
+  // 右键状态
+  let isRightMouseDown = false;
+  let breatheDirection = 1; // 1 = 变大, -1 = 变小
+  const breatheSpeed = 2;
+  const breathePause = 50; // 边界处暂停帧数
+  let breathePauseCounter = 0;
+  
+  // ========== 更新取景框大小 ==========
+  const updatePortalRadius = () => {
+    if (isRightMouseDown) {
+      // 按住右键：呼吸效果
+      if (breathePauseCounter > 0) {
+        breathePauseCounter--;
+      } else {
+        currentRadius += breatheSpeed * breatheDirection;
+        
+        if (currentRadius >= maxRadius) {
+          currentRadius = maxRadius;
+          breatheDirection = -1;
+          breathePauseCounter = breathePause;
+        } else if (currentRadius <= minRadius * 1.5) {
+          currentRadius = minRadius * 1.5;
+          breatheDirection = 1;
+          breathePauseCounter = breathePause;
+        }
+      }
+    } else {
+      // 松开右键：弹回初始大小
+      const spring = 0.15;
+      currentRadius += (minRadius - currentRadius) * spring;
+    }
+  };
+  
+  // ========== 动画循环 ==========
+  const animate = () => {
+    updatePortalRadius();
+    behindWorld.style.clipPath = `circle(${currentRadius}px at ${mouseX}px ${mouseY}px)`;
+    requestAnimationFrame(animate);
+  };
+  animate();
+  
+  // ========== 右键事件 ==========
+  document.addEventListener('mousedown', (e) => {
+    if (e.button === 2) { // 右键
+      isRightMouseDown = true;
+      breatheDirection = 1;
+      breathePauseCounter = 0;
+    }
+  });
+  
+  document.addEventListener('mouseup', (e) => {
+    if (e.button === 2) { // 右键
+      isRightMouseDown = false;
+    }
+  });
+  
+  // ========== 鼠标位置 ==========
   let mouseX = window.innerWidth / 2;
   let mouseY = window.innerHeight / 2;
   
-  // 更新光标位置和背后世界窗口
+  // ========== 更新光标位置 ==========
   const updateCursor = () => {
-    // 光标小点
     cursorDot.style.left = `${mouseX}px`;
     cursorDot.style.top = `${mouseY}px`;
-    
-    // 背后世界 clip-path（相对于视口）
-    behindWorld.style.clipPath = `circle(${portalRadius}px at ${mouseX}px ${mouseY}px)`;
   };
   
   // 鼠标移动
@@ -452,9 +501,13 @@ function initCustomCursor() {
     }
   });
   
-  // 点击状态
-  document.addEventListener('mousedown', () => cursorDot.classList.add('clicking'));
-  document.addEventListener('mouseup', () => cursorDot.classList.remove('clicking'));
+  // 左键点击状态
+  document.addEventListener('mousedown', (e) => {
+    if (e.button === 0) cursorDot.classList.add('clicking');
+  });
+  document.addEventListener('mouseup', (e) => {
+    if (e.button === 0) cursorDot.classList.remove('clicking');
+  });
   
   // 鼠标离开窗口
   document.addEventListener('mouseleave', () => {
