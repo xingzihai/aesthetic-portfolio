@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="xingzihai - 星光落入冰水，温暖慢慢渗透">
+  <title>xingzihai · 冰水泡枸杞</title>
+  
+  <!-- 预连接 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- 字体加载 -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <!-- 主样式 -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ========== 导航栏 ========== -->
+  <nav class="site-nav">
+    <div class="nav-container">
+      <a href="#hero" class="nav-logo">xingzihai</a>
+      <div class="nav-links">
+        <a href="#gallery" class="nav-link">作品</a>
+        <a href="#philosophy" class="nav-link">理念</a>
+        <a href="#skills" class="nav-link">技术</a>
+        <a href="#contact" class="nav-link">联系</a>
+      </div>
+      <button class="nav-toggle" aria-label="菜单">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+  
+  <!-- ========== Hero 区 ========== -->
+  <section id="hero" class="hero">
+    <!-- 背景光影流动 -->
+    <div class="hero-light-flow"></div>
+    
+    <!-- 光斑粒子 -->
+    <div class="hero-particles">
+      <span class="particle p1"></span>
+      <span class="particle p2"></span>
+      <span class="particle p3"></span>
+      <span class="particle p4"></span>
+      <span class="particle p5"></span>
+    </div>
+    
+    <!-- 内容 -->
+    <div class="hero-content">
+      <!-- 动态头像 -->
+      <div class="avatar-container">
+        <!-- 外层氛围光 -->
+        <div class="avatar-aura"></div>
+        
+        <!-- 过渡层 -->
+        <div class="avatar-transition"></div>
+        
+        <!-- 六棱柱 -->
+        <div class="avatar-crystal-wrapper">
+          <div class="avatar-crystal">
+            <!-- 侧面 -->
+            <span class="crystal-face f1"></span>
+            <span class="crystal-face f2"></span>
+            <span class="crystal-face f3"></span>
+            <span class="crystal-face f4"></span>
+            <span class="crystal-face f5"></span>
+            <span class="crystal-face f6"></span>
+            <!-- 顶底面（防止穿帮） -->
+            <span class="crystal-top"></span>
+            <span class="crystal-bottom"></span>
+          </div>
+          
+          <!-- 中心核心 -->
+          <div class="avatar-core">
+            <span class="core-inner"></span>
+          </div>
+        </div>
+        
+        <!-- 光晕层 -->
+        <div class="avatar-glow"></div>
+      </div>
+      
+      <!-- 标识 -->
+      <div class="hero-identity">
+        <h1 class="hero-name">xingzihai</h1>
+        <p class="hero-name-cn">冰水泡枸杞</p>
+        <p class="hero-tagline">星光落入冰水，温暖慢慢渗透</p>
+      </div>
+    </div>
+    
+    <!-- 滚动提示 -->
+    <div class="scroll-hint">
+      <span class="scroll-arrow"></span>
+    </div>
+  </section>
+  
+  <!-- ========== 美学展示区 ========== -->
+  <section id="gallery" class="gallery-section">
+    <header class="section-header">
+      <h2 class="section-title">光的练习</h2>
+      <p class="section-subtitle">用颜色画出时间</p>
+    </header>
+    
+    <div class="gallery-grid">
+      <!-- 配色展示 -->
+      <article class="gallery-card palette-card">
+        <div class="card-inner-glow"></div>
+        <div class="card-content">
+          <h3 class="card-title">色彩</h3>
+          <p class="card-desc">莫兰迪与莫奈的对话</p>
+          <div class="palette-preview">
+            <span class="palette-dot" style="background: #D4C4BC;"></span>
+            <span class="palette-dot" style="background: #A8B4B8;"></span>
+            <span class="palette-dot" style="background: #9CAA9C;"></span>
+            <span class="palette-dot" style="background: #B8A8B8;"></span>
+            <span class="palette-dot" style="background: #FFB088;"></span>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 字体展示 -->
+      <article class="gallery-card typography-card">
+        <div class="card-inner-glow"></div>
+        <div class="card-content">
+          <h3 class="card-title">文字</h3>
+          <p class="card-desc">衬线与无衬线的协奏</p>
+          <div class="typography-preview">
+            <span class="type-serif">Aa</span>
+            <span class="type-sans">Aa</span>
+            <span class="type-cn">墨</span>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 渐变展示 -->
+      <article class="gallery-card gradient-card">
+        <div class="card-inner-glow"></div>
+        <div class="card-content">
+          <h3 class="card-title">光影</h3>
+          <p class="card-desc">印象派的笔触</p>
+          <div class="gradient-preview"></div>
+        </div>
+      </article>
+      
+      <!-- 交互展示 -->
+      <article class="gallery-card interaction-card">
+        <div class="card-inner-glow"></div>
+        <div class="card-content">
+          <h3 class="card-title">节奏</h3>
+          <p class="card-desc">时间在空间中流动</p>
+          <div class="interaction-demo">
+            <span class="demo-bar"></span>
+            <span class="demo-bar"></span>
+            <span class="demo-bar"></span>
+            <span class="demo-bar"></span>
+            <span class="demo-bar"></span>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 呼吸展示 -->
+      <article class="gallery-card breath-card">
+        <div class="card-inner-glow"></div>
+        <div class="card-content">
+          <h3 class="card-title">呼吸</h3>
+          <p class="card-desc">生命的韵律</p>
+          <div class="breath-demo">
+            <span class="breath-dot"></span>
+            <span class="breath-dot"></span>
+            <span class="breath-dot"></span>
+            <span class="breath-dot"></span>
+            <span class="breath-dot"></span>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 波纹展示 -->
+      <article class="gallery-card ripple-card">
+        <div class="card-inner-glow"></div>
+        <div class="card-content">
+          <h3 class="card-title">涟漪</h3>
+          <p class="card-desc">水面的记忆</p>
+          <div class="ripple-demo">
+            <span class="ripple-ring r1"></span>
+            <span class="ripple-ring r2"></span>
+            <span class="ripple-ring r3"></span>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 轨迹展示 -->
+      <article class="gallery-card orbit-card">
+        <div class="card-inner-glow"></div>
+        <div class="card-content">
+          <h3 class="card-title">轨迹</h3>
+          <p class="card-desc">星辰的舞蹈</p>
+          <div class="orbit-demo">
+            <span class="orbit-center"></span>
+            <span class="orbit-dot"></span>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 波浪展示 -->
+      <article class="gallery-card wave-card">
+        <div class="card-inner-glow"></div>
+        <div class="card-content">
+          <h3 class="card-title">波浪</h3>
+          <p class="card-desc">海的低语</p>
+          <div class="wave-demo">
+            <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+              <path class="wave-path" d="M0 15 Q 12.5 5, 25 15 T 50 15 T 75 15 T 100 15 V 30 H 0 Z"/>
+            </svg>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 脉动展示 -->
+      <article class="gallery-card pulse-card">
+        <div class="card-inner-glow"></div>
+        <div class="card-content">
+          <h3 class="card-title">脉动</h3>
+          <p class="card-desc">心跳的节拍</p>
+          <div class="pulse-demo">
+            <span class="pulse-line"></span>
+            <span class="pulse-line"></span>
+            <span class="pulse-line"></span>
+            <span class="pulse-line"></span>
+            <span class="pulse-line"></span>
+            <span class="pulse-line"></span>
+            <span class="pulse-line"></span>
+            <span class="pulse-line"></span>
+            <span class="pulse-line"></span>
+            <span class="pulse-line"></span>
+            <span class="pulse-line"></span>
+            <span class="pulse-line"></span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+  
+  <!-- ========== 设计理念区 ========== -->
+  <section id="philosophy" class="philosophy-section">
+    <div class="philosophy-bg"></div>
+    
+    <div class="philosophy-container">
+      <header class="section-header">
+        <h2 class="section-title">印象</h2>
+        <p class="section-subtitle">不追求清晰的边界，而是让颜色自己说话</p>
+      </header>
+      
+      <div class="philosophy-grid">
+        <article class="philosophy-block">
+          <h3 class="philosophy-title">光</h3>
+          <p class="philosophy-text">
+            莫奈用三十年追逐光的变化。日出时的橙，正午的白，黄昏的紫。
+            每一帧都是时间的凝固。我们用代码延续这种追逐。
+          </p>
+        </article>
+        
+        <article class="philosophy-block">
+          <h3 class="philosophy-title">影</h3>
+          <p class="philosophy-text">
+            印象派不相信黑色。阴影是紫色的、蓝色的——是被光照亮的颜色。
+            当你凝视暗处，会发现那里从不曾真正黑暗。
+          </p>
+        </article>
+        
+        <article class="philosophy-block">
+          <h3 class="philosophy-title">时间</h3>
+          <p class="philosophy-text">
+            背景的光影在60秒内完成一次循环。头像的颜色在10秒内流转一个周期。
+            时间在这里慢下来，但你若凝视，会发现它从未静止。
+          </p>
+        </article>
+        
+        <article class="philosophy-block">
+          <h3 class="philosophy-title">留白</h3>
+          <p class="philosophy-text">
+            莫兰迪用灰调让世界安静下来。不是空白，而是呼吸的空间。
+            每一处留白都是在邀请：请停下来，想一想。
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ========== 技术能力区 ========== -->
+  <section id="skills" class="skills-section">
+    <header class="section-header">
+      <h2 class="section-title">代码的笔触</h2>
+      <p class="section-subtitle">用代码画出光的形状</p>
+    </header>
+    
+    <div class="skills-grid">
+      <article class="skill-card">
+        <div class="skill-icon" style="--icon-color: #D8B0C0;">
+          <span class="icon-shape"></span>
+        </div>
+        <h4 class="skill-title">Frontend</h4>
+        <p class="skill-desc">Vue / React / TypeScript</p>
+        <div class="skill-tags">
+          <span class="skill-tag">CSS Animation</span>
+          <span class="skill-tag">Canvas</span>
+        </div>
+      </article>
+      
+      <article class="skill-card">
+        <div class="skill-icon" style="--icon-color: #9CAA9C;">
+          <span class="icon-shape"></span>
+        </div>
+        <h4 class="skill-title">Backend</h4>
+        <p class="skill-desc">Node.js / Python / Go</p>
+        <div class="skill-tags">
+          <span class="skill-tag">REST API</span>
+          <span class="skill-tag">Database</span>
+        </div>
+      </article>
+      
+      <article class="skill-card">
+        <div class="skill-icon" style="--icon-color: #A8B4B8;">
+          <span class="icon-shape"></span>
+        </div>
+        <h4 class="skill-title">DevOps</h4>
+        <p class="skill-desc">Docker / K8s / CI/CD</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Cloud</span>
+          <span class="skill-tag">Automation</span>
+        </div>
+      </article>
+      
+      <article class="skill-card">
+        <div class="skill-icon" style="--icon-color: #B8A8B8;">
+          <span class="icon-shape"></span>
+        </div>
+        <h4 class="skill-title">Design</h4>
+        <p class="skill-desc">UI/UX / Motion / Brand</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">Motion</span>
+        </div>
+      </article>
+    </div>
+  </section>
+  
+  <!-- ========== 联系/结尾区 ========== -->
+  <footer id="contact" class="footer-section">
+    <!-- 渐隐效果 -->
+    <div class="footer-fade-top"></div>
+    
+    <div class="footer-content">
+      <p class="footer-text">星光还在渗透...</p>
+      
+      <div class="footer-links">
+        <a href="https://github.com/xingzihai" class="footer-link" target="_blank" rel="noopener">
+          <span class="link-icon">◇</span>
+          <span class="link-text">GitHub</span>
+        </a>
+      </div>
+      
+      <p class="footer-copyright">© 2026 xingzihai · 用光画出时间</p>
+    </div>
+    
+    <div class="footer-fade-bottom"></div>
+  </footer>
+  
+  <!-- 滚动进度条 -->
+  <div class="scroll-progress"></div>
+  
+  <!-- JavaScript -->
+  <script src="scripts/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+{
+  "name": "Morandi Professional Palette System",
+  "version": "1.0.0",
+  "created": "2026-04-02",
+  
+  "background": {
+    "100": "#FAF8F5",
+    "200": "#F5F1ED",
+    "300": "#E8DFD6",
+    "400": "#D4C4BC",
+    "500": "#C9B8A8"
+  },
+  
+  "text": {
+    "100": "#3D3228",
+    "200": "#5C4A3D",
+    "300": "#7A7A7A",
+    "400": "#9A9A9A",
+    "500": "#B5B5B5",
+    "inverse": "#F5F1ED"
+  },
+  
+  "pink": {
+    "100": "#EAD9D4",
+    "200": "#D4C4BC",
+    "300": "#C4A8A0",
+    "400": "#B48C84",
+    "500": "#9A7068",
+    "name": "Dusty Pink",
+    "psychology": "温暖、安全、怀旧",
+    "usage": "亲和力内容、卡片背景"
+  },
+  
+  "blue": {
+    "100": "#C4CED2",
+    "200": "#A8B4B8",
+    "300": "#8A9AA0",
+    "400": "#6A7A82",
+    "500": "#4A5A62",
+    "name": "Haze Blue",
+    "psychology": "冷静、信任、理性",
+    "usage": "专业内容、导航、边框"
+  },
+  
+  "green": {
+    "100": "#BCBEB8",
+    "200": "#9CAA9C",
+    "300": "#7C8A7C",
+    "400": "#5C6A5C",
+    "500": "#3C4A3C",
+    "name": "Sage Green",
+    "psychology": "自然、平和、治愈",
+    "usage": "成功状态、自然主题"
+  },
+  
+  "purple": {
+    "100": "#D8D0D8",
+    "200": "#B8A8B8",
+    "300": "#988898",
+    "400": "#786878",
+    "500": "#584858",
+    "name": "Dusty Purple",
+    "psychology": "优雅、神秘、艺术",
+    "usage": "创意内容、高端主题"
+  },
+  
+  "orange": {
+    "100": "#E8D8C8",
+    "200": "#D8C8A8",
+    "300": "#C8B898",
+    "400": "#B8A878",
+    "500": "#988858",
+    "name": "Dusty Orange",
+    "psychology": "温暖、活力、友好",
+    "usage": "强调、行动号召"
+  },
+  
+  "yellow": {
+    "100": "#E8E0D0",
+    "200": "#D8D0B8",
+    "300": "#C8C0A8",
+    "400": "#B8B088",
+    "500": "#989068",
+    "name": "Dusty Yellow",
+    "psychology": "柔和、明亮、温和",
+    "usage": "警示、提示信息"
+  },
+  
+  "rose": {
+    "100": "#E8D0D8",
+    "200": "#D8B0C0",
+    "300": "#C890A0",
+    "400": "#B87080",
+    "500": "#985060",
+    "name": "Dusty Rose",
+    "psychology": "浪漫、优雅",
+    "usage": "情感内容、艺术展示"
+  },
+  
+  "status": {
+    "success": {
+      "color": "#9CAA9C",
+      "background": "#E8EEE8"
+    },
+    "warning": {
+      "color": "#C9B896",
+      "background": "#F4EEE4"
+    },
+    "error": {
+      "color": "#C4A4A4",
+      "background": "#F4E8E8"
+    },
+    "info": {
+      "color": "#A8B4B8",
+      "background": "#F0F4F5"
+    }
+  },
+  
+  "border": {
+    "soft": "rgba(168, 180, 184, 0.15)",
+    "medium": "rgba(168, 180, 184, 0.30)",
+    "strong": "rgba(92, 74, 61, 0.20)"
+  },
+  
+  "shadow": {
+    "xs": "0 1px 4px rgba(92, 74, 61, 0.04)",
+    "sm": "0 2px 8px rgba(92, 74, 61, 0.06)",
+    "md": "0 4px 16px rgba(92, 74, 61, 0.08)",
+    "lg": "0 8px 32px rgba(92, 74, 61, 0.10)",
+    "xl": "0 16px 48px rgba(92, 74, 61, 0.12)"
+  },
+  
+  "spacing": {
+    "xs": "8px",
+    "sm": "16px",
+    "md": "24px",
+    "lg": "32px",
+    "xl": "48px",
+    "2xl": "64px",
+    "3xl": "80px"
+  },
+  
+  "radius": {
+    "xs": "4px",
+    "sm": "6px",
+    "md": "8px",
+    "lg": "12px",
+    "xl": "16px",
+    "2xl": "24px"
+  },
+  
+  "easing": {
+    "smooth": "cubic-bezier(0.4, 0, 0.2, 1)",
+    "out": "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+    "spring": "cubic-bezier(0.34, 1.56, 0.64, 1)"
+  },
+  
+  "transition": {
+    "fast": "150ms",
+    "base": "250ms",
+    "slow": "400ms"
+  }
+}

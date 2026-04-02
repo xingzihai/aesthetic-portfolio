@@ -1,0 +1,186 @@
+/* ========================================
+   Morandi Professional Palette System
+   SCSS Variables · @import 引用
+   ======================================== */
+
+// ========== 背景色层级 (Background Scale) ==========
+$bg-100: #FAF8F5;
+$bg-200: #F5F1ED;
+$bg-300: #E8DFD6;
+$bg-400: #D4C4BC;
+$bg-500: #C9B8A8;
+
+// ========== 文字色层级 (Text Scale) ==========
+$text-100: #3D3228;
+$text-200: #5C4A3D;
+$text-300: #7A7A7A;
+$text-400: #9A9A9A;
+$text-500: #B5B5B5;
+$text-inverse: #F5F1ED;
+
+// ========== 灰粉色系家族 (Dusty Pink Family) ==========
+$pink-100: #EAD9D4;
+$pink-200: #D4C4BC;
+$pink-300: #C4A8A0;
+$pink-400: #B48C84;
+$pink-500: #9A7068;
+
+// ========== 雾霾蓝色系家族 (Haze Blue Family) ==========
+$blue-100: #C4CED2;
+$blue-200: #A8B4B8;
+$blue-300: #8A9AA0;
+$blue-400: #6A7A82;
+$blue-500: #4A5A62;
+
+// ========== 灰绿色系家族 (Sage Green Family) ==========
+$green-100: #BCBEB8;
+$green-200: #9CAA9C;
+$green-300: #7C8A7C;
+$green-400: #5C6A5C;
+$green-500: #3C4A3C;
+
+// ========== 灰紫色系家族 (Dusty Purple Family) ==========
+$purple-100: #D8D0D8;
+$purple-200: #B8A8B8;
+$purple-300: #988898;
+$purple-400: #786878;
+$purple-500: #584858;
+
+// ========== 灰橙色系家族 (Dusty Orange Family) ==========
+$orange-100: #E8D8C8;
+$orange-200: #D8C8A8;
+$orange-300: #C8B898;
+$orange-400: #B8A878;
+$orange-500: #988858;
+
+// ========== 灰黄色系家族 (Dusty Yellow Family) ==========
+$yellow-100: #E8E0D0;
+$yellow-200: #D8D0B8;
+$yellow-300: #C8C0A8;
+$yellow-400: #B8B088;
+$yellow-500: #989068;
+
+// ========== 灰玫红色系家族 (Dusty Rose Family) ==========
+$rose-100: #E8D0D8;
+$rose-200: #D8B0C0;
+$rose-300: #C890A0;
+$rose-400: #B87080;
+$rose-500: #985060;
+
+// ========== 功能状态色 (Status Colors) ==========
+$status-success: #9CAA9C;
+$status-success-bg: #E8EEE8;
+$status-warning: #C9B896;
+$status-warning-bg: #F4EEE4;
+$status-error: #C4A4A4;
+$status-error-bg: #F4E8E8;
+$status-info: #A8B4B8;
+$status-info-bg: #F0F4F5;
+
+// ========== 边框 ==========
+$border-soft: rgba(168, 180, 184, 0.15);
+$border-medium: rgba(168, 180, 184, 0.30);
+$border-strong: rgba(92, 74, 61, 0.20);
+
+// ========== 阴影系统 ==========
+$shadow-xs: 0 1px 4px rgba(92, 74, 61, 0.04);
+$shadow-sm: 0 2px 8px rgba(92, 74, 61, 0.06);
+$shadow-md: 0 4px 16px rgba(92, 74, 61, 0.08);
+$shadow-lg: 0 8px 32px rgba(92, 74, 61, 0.10);
+$shadow-xl: 0 16px 48px rgba(92, 74, 61, 0.12);
+
+// ========== 间距系统 (8px Grid) ==========
+$space-xs: 8px;
+$space-sm: 16px;
+$space-md: 24px;
+$space-lg: 32px;
+$space-xl: 48px;
+$space-2xl: 64px;
+$space-3xl: 80px;
+
+// ========== 圆角系统 ==========
+$radius-xs: 4px;
+$radius-sm: 6px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-2xl: 24px;
+
+// ========== 过渡动画 ==========
+$ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+$transition-fast: 150ms;
+$transition-base: 250ms;
+$transition-slow: 400ms;
+
+// ========== 组合变量 (便于快速使用) ==========
+$palette-pink: (
+  '100': $pink-100,
+  '200': $pink-200,
+  '300': $pink-300,
+  '400': $pink-400,
+  '500': $pink-500
+);
+
+$palette-blue: (
+  '100': $blue-100,
+  '200': $blue-200,
+  '300': $blue-300,
+  '400': $blue-400,
+  '500': $blue-500
+);
+
+$palette-green: (
+  '100': $green-100,
+  '200': $green-200,
+  '300': $green-300,
+  '400': $green-400,
+  '500': $green-500
+);
+
+$palette-purple: (
+  '100': $purple-100,
+  '200': $purple-200,
+  '300': $purple-300,
+  '400': $purple-400,
+  '500': $purple-500
+);
+
+$palette-orange: (
+  '100': $orange-100,
+  '200': $orange-200,
+  '300': $orange-300,
+  '400': $orange-400,
+  '500': $orange-500
+);
+
+$palette-yellow: (
+  '100': $yellow-100,
+  '200': $yellow-200,
+  '300': $yellow-300,
+  '400': $yellow-400,
+  '500': $yellow-500
+);
+
+$palette-rose: (
+  '100': $rose-100,
+  '200': $rose-200,
+  '300': $rose-300,
+  '400': $rose-400,
+  '500': $rose-500
+);
+
+// ========== 辅助函数 ==========
+@function palette-color($family, $level) {
+  $map: null;
+  @if $family == 'pink' { $map: $palette-pink; }
+  @if $family == 'blue' { $map: $palette-blue; }
+  @if $family == 'green' { $map: $palette-green; }
+  @if $family == 'purple' { $map: $palette-purple; }
+  @if $family == 'orange' { $map: $palette-orange; }
+  @if $family == 'yellow' { $map: $palette-yellow; }
+  @if $family == 'rose' { $map: $palette-rose; }
+  
+  @return map-get($map, $level);
+}
