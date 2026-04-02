@@ -149,10 +149,37 @@ body {
   --text-300: #607068;
   --text-400: #889088;
   --text-500: #A8B0A8;
+  --text-inverse: #D8E8E0;
   
   --monet-sunrise: #FFB070;
   --monet-lily: #FFC8D8;
   --monet-water: #70A8C0;
+  
+  /* 补充遗漏的莫奈色 */
+  --monet-sun-core: #FF8B50;
+  --monet-sky-morning: #B8D4D8;
+  --monet-sky-evening: #789098;
+  --monet-lily-dark: #C86080;
+  --monet-leaf: #5A7858;
+  
+  /* 补充融合色（莫奈绿调） */
+  --fusion-warm: #B8C8B0;
+  --fusion-cool: #A0B8B0;
+  --fusion-pink: #C8B0B8;
+  --fusion-green: #6A8868;
+  
+  /* 补充阴影色 */
+  --shadow-purple: rgba(90, 120, 100, 0.12);
+  --shadow-purple-light: rgba(90, 120, 100, 0.06);
+  --shadow-blue: rgba(112, 168, 192, 0.1);
+  --shadow-warm: rgba(255, 176, 112, 0.12);
+  
+  /* 补充边框色 */
+  --border-soft: rgba(90, 136, 112, 0.2);
+  --border-medium: rgba(90, 136, 112, 0.35);
+  
+  /* 图标色 */
+  --icon-color: rgba(255, 176, 112, 0.6);
 }
 
 /* ========== 背后世界背景 - 莫奈水面渐变 ========== */
@@ -278,40 +305,40 @@ body {
 .behind-world .gallery-section {
   background: 
     radial-gradient(ellipse 80% 50% at 20% 30%, rgba(160, 200, 216, 0.25) 0%, transparent 50%),
-    linear-gradient(180deg, rgba(168, 196, 184, 0.95) 0%, rgba(160, 200, 216, 0.3) 100%);
+    linear-gradient(180deg, rgba(168, 196, 184, 0.95) 0%, rgba(160, 200, 216, 0.5) 100%);
 }
 
 .behind-world .section-title {
   color: #2A3830;
-  text-shadow: 0 0 30px rgba(255, 176, 112, 0.2);
+  text-shadow: 0 0 30px rgba(160, 200, 216, 0.3);
 }
 
 /* ========== 背后世界卡片 - 莫奈光影 ========== */
 .behind-world .gallery-card {
   background: linear-gradient(
     135deg,
-    rgba(168, 196, 184, 0.95) 0%,
-    rgba(184, 212, 200, 0.9) 50%,
-    rgba(168, 196, 184, 0.95) 100%
+    rgba(168, 196, 184, 0.85) 0%,
+    rgba(184, 212, 200, 0.70) 50%,
+    rgba(168, 196, 184, 0.85) 100%
   );
-  border-color: rgba(255, 176, 112, 0.35);
+  border-color: rgba(160, 200, 216, 0.45);
   box-shadow: 
     0 4px 20px rgba(42, 56, 48, 0.1),
-    inset 0 0 60px rgba(255, 220, 180, 0.08);
+    inset 0 0 50px rgba(160, 200, 216, 0.08);
 }
 
 .behind-world .gallery-card:hover {
-  border-color: rgba(255, 176, 112, 0.6);
+  border-color: rgba(160, 200, 216, 0.65);
   box-shadow: 
     0 8px 32px rgba(42, 56, 48, 0.15),
-    0 0 30px rgba(255, 176, 112, 0.2),
-    inset 0 0 60px rgba(255, 220, 180, 0.12);
+    0 0 30px rgba(160, 200, 216, 0.2),
+    inset 0 0 50px rgba(160, 200, 216, 0.12);
 }
 
 .behind-world .card-inner-glow {
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(255, 220, 180, 0.15) 0%,
+    rgba(160, 200, 216, 0.15) 0%,
     transparent 60%
   );
 }
@@ -372,6 +399,110 @@ body {
     transform: translate(-50%, -50%) scale(1.05); 
     opacity: 1; 
   }
+}
+
+/* ========== 背后世界导航栏 ========== */
+.behind-world .site-nav {
+  background: rgba(168, 196, 184, 0.85);
+  border-bottom-color: rgba(90, 136, 112, 0.2);
+}
+
+.behind-world .site-nav.scrolled {
+  background: rgba(168, 196, 184, 0.95);
+}
+
+/* ========== 背后世界Philosophy区域 ========== */
+.behind-world .philosophy-section {
+  background: rgba(168, 196, 184, 0.3);
+}
+
+.behind-world .philosophy-bg {
+  background: linear-gradient(
+    180deg,
+    var(--canvas-bg) 0%,
+    rgba(168, 196, 184, 0.5) 50%,
+    var(--canvas-bg) 100%
+  );
+}
+
+.behind-world .philosophy-block {
+  background: rgba(216, 232, 224, 0.7);
+  border-color: rgba(90, 136, 112, 0.25);
+}
+
+.behind-world .philosophy-block:hover {
+  background: rgba(216, 232, 224, 0.85);
+  box-shadow: 0 8px 32px rgba(42, 56, 48, 0.1), 0 0 20px rgba(160, 200, 216, 0.15);
+}
+
+.behind-world .philosophy-title {
+  color: #2A3830;
+}
+
+.behind-world .philosophy-text {
+  color: #4A5850;
+}
+
+/* ========== 背后世界Skills区域 ========== */
+.behind-world .skills-section {
+  background: rgba(160, 200, 216, 0.2);
+}
+
+.behind-world .skill-card {
+  background: var(--canvas-card);
+  border-color: rgba(90, 136, 112, 0.25);
+  box-shadow: 0 8px 32px rgba(42, 56, 48, 0.08), inset 0 0 40px rgba(160, 200, 216, 0.05);
+}
+
+.behind-world .skill-card:hover {
+  border-color: rgba(90, 136, 112, 0.4);
+  box-shadow: 0 12px 40px rgba(42, 56, 48, 0.12), 0 0 20px rgba(160, 200, 216, 0.12);
+}
+
+.behind-world .skill-icon {
+  background: linear-gradient(135deg, var(--icon-color), transparent);
+}
+
+/* ========== 背后世界Footer区域 ========== */
+.behind-world .footer-section {
+  background: rgba(168, 196, 184, 0.4);
+}
+
+.behind-world .footer-fade-top {
+  background: linear-gradient(to bottom, var(--canvas-bg), transparent);
+}
+
+.behind-world .footer-fade-bottom {
+  background: linear-gradient(to top, var(--canvas-deep), transparent);
+  opacity: 0.4;
+}
+
+.behind-world .footer-text {
+  color: #2A3830;
+}
+
+.behind-world .footer-copyright {
+  color: #4A5850;
+}
+
+.behind-world .footer-link {
+  background: var(--canvas-card);
+  border-color: rgba(90, 136, 112, 0.25);
+}
+
+.behind-world .footer-link:hover {
+  border-color: rgba(90, 136, 112, 0.4);
+  box-shadow: 0 4px 16px rgba(42, 56, 48, 0.1);
+}
+
+/* ========== 背后世界调色板预览 ========== */
+.behind-world .palette-dot {
+  box-shadow: 0 4px 12px rgba(90, 136, 112, 0.2);
+}
+
+/* ========== 背后世界滚动进度条 ========== */
+.behind-world .scroll-progress {
+  background: linear-gradient(90deg, var(--monet-sunrise), var(--monet-lily), var(--monet-sky-evening));
 }
 
 /* ========== 自定义光标 ========== */
