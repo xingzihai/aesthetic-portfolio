@@ -303,9 +303,19 @@ body {
 
 /* ========== 背后世界画廊 ========== */
 .behind-world .gallery-section {
+  /* 移除 max-width 限制，让背景全宽显示 */
+  max-width: none;
   background: 
     radial-gradient(ellipse 80% 50% at 20% 30%, rgba(160, 200, 216, 0.25) 0%, transparent 50%),
     linear-gradient(180deg, rgba(168, 196, 184, 0.95) 0%, rgba(160, 200, 216, 0.5) 100%);
+}
+
+/* Gallery 内容区域限制宽度 */
+.behind-world .gallery-section .section-header,
+.behind-world .gallery-section .gallery-grid {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .behind-world .section-title {
@@ -445,7 +455,17 @@ body {
 
 /* ========== 背后世界Skills区域 ========== */
 .behind-world .skills-section {
+  /* 移除 max-width 限制，让背景全宽显示 */
+  max-width: none;
   background: rgba(160, 200, 216, 0.2);
+}
+
+/* Skills 内容区域限制宽度 */
+.behind-world .skills-section .section-header,
+.behind-world .skills-section .skills-grid {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .behind-world .skill-card {
