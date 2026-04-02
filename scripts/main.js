@@ -376,7 +376,7 @@ function initFireflies() {
   if (prefersReducedMotion) return;
   
   // 萤火虫数量
-  const count = 35;
+  const count = 80;
   
   // 萤火虫状态数组
   const fireflies = [];
@@ -402,7 +402,7 @@ function initFireflies() {
     container.appendChild(el);
     
     // 状态初始化
-    const containerSize = 400;
+    const containerSize = 500;
     const half = containerSize / 2;
     
     // 初始位置：随机分布在容器内（避开中心头像区域）
