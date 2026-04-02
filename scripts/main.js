@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
   initSmoothScroll();
   initAvatarInteraction();
+  initInnerParticles();
 });
 
 /* ========================================
@@ -362,3 +363,143 @@ if (process?.env?.NODE_ENV === 'development') {
    导出（如果需要模块化）
    ======================================== */
 // export { initScrollProgress, initNavScroll, initMobileNav, initScrollAnimations };
+
+/* ========================================
+   内部漂浮微粒交互
+   ======================================== */
+function initInnerParticles() {
+  const particles = document.querySelectorAll('.inner-particle');
+  const wrapper = document.querySelector('.avatar-crystal-wrapper');
+  
+  if (particles.length === 0 || !wrapper) return;
+  
+  // 检测减少动画偏好
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
+  
+  // 获取头像中心位置（相对于视口）
+  const getCenter = () => {
+    const rect = wrapper.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2
+    };
+  };
+  
+  // 微粒状态
+  const particleStates = [];
+  
+  // 初始化每个微粒
+  particles.forEach((p, i) => {
+    const isAttract = p.classList.contains('attract');
+    
+    // 从CSS获取初始位置百分比
+    const leftPercent = parseFloat(p.style.left) || (20 + i * 8);
+    const topPercent = parseFloat(p.style.top) || (20 + i * 8);
+    
+    // 转换为像素（相对于wrapper）
+    const wrapperSize = 160; // avatar-particles-inner 尺寸
+    const baseX = (leftPercent / 100) * wrapperSize - wrapperSize / 2;
+    const baseY = (topPercent / 100) * wrapperSize - wrapperSize / 2;
+    
+    particleStates.push({
+      el: p,
+      isAttract,
+      // 基础位置（中心为原点）
+      baseX,
+      baseY,
+      // 当前位置
+      currentX: baseX,
+      currentY: baseY,
+      // 速度
+      vx: 0,
+      vy: 0,
+      // 自主运动的相位（不同微粒不同起始相位）
+      phase: i * 0.5,
+      // 力度系数
+      strength: isAttract ? 0.03 : 0.05, // 吸引型更温和
+      maxDist: isAttract ? 40 : 35, // 影响范围
+      // 弹簧参数
+      spring: 0.04,
+      damping: 0.85
+    });
+  });
+  
+  // 鼠标位置
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  }, { passive: true });
+  
+  // 动画循环
+  const animate = () => {
+    const center = getCenter();
+    const now = performance.now() * 0.001; // 秒
+    
+    particleStates.forEach(state => {
+      // 计算鼠标相对于头像中心的距离
+      const dx = mouseX - center.x;
+      const dy = mouseY - center.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      
+      // 影响因子（距离越近影响越大）
+      const influence = Math.max(0, 1 - dist / state.maxDist);
+      
+      // 目标位置 = 基础位置 + 自主运动 + 光标交互
+      let targetX = state.baseX;
+      let targetY = state.baseY;
+      
+      // 自主漂浮（正弦波）
+      const idleAmp = 3; // 自主漂浮幅度
+      const idleX = Math.sin(now * 0.5 + state.phase) * idleAmp;
+      const idleY = Math.cos(now * 0.4 + state.phase * 0.7) * idleAmp;
+      targetX += idleX;
+      targetY += idleY;
+      
+      // 光标交互
+      if (dist < state.maxDist && influence > 0.1) {
+        // 影响力度
+        const force = influence * state.strength * 100;
+        
+        if (state.isAttract) {
+          // 吸引：向光标方向移动（但限制距离）
+          const attractStrength = force * 0.5;
+          targetX += dx * attractStrength * 0.02;
+          targetY += dy * attractStrength * 0.02;
+        } else {
+          // 排斥：远离光标
+          const repelStrength = force;
+          targetX -= dx * repelStrength * 0.015;
+          targetY -= dy * repelStrength * 0.015;
+        }
+      }
+      
+      // 限制范围（不超出六棱柱边界）
+      const maxRange = 50;
+      targetX = Math.max(-maxRange, Math.min(maxRange, targetX));
+      targetY = Math.max(-maxRange, Math.min(maxRange, targetY));
+      
+      // 弹簧物理
+      const fx = (targetX - state.currentX) * state.spring;
+      const fy = (targetY - state.currentY) * state.spring;
+      
+      state.vx += fx;
+      state.vy += fy;
+      state.vx *= state.damping;
+      state.vy *= state.damping;
+      
+      state.currentX += state.vx;
+      state.currentY += state.vy;
+      
+      // 应用变换（相对中心）
+      state.el.style.transform = `translate(${state.currentX}px, ${state.currentY}px)`;
+    });
+    
+    requestAnimationFrame(animate);
+  };
+  
+  animate();
+}
