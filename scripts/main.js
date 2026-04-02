@@ -394,6 +394,12 @@ function initFireflies() {
     el.style.width = `${size}px`;
     el.style.height = `${size}px`;
     
+    // 初始位置：居中（firefly-container 的中心）
+    el.style.left = '50%';
+    el.style.top = '50%';
+    el.style.marginLeft = `${-size/2}px`;
+    el.style.marginTop = `${-size/2}px`;
+    
     container.appendChild(el);
     
     // 状态初始化
