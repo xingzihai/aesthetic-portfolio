@@ -387,6 +387,10 @@ function initCustomCursor() {
   // 禁用右键菜单
   document.addEventListener('contextmenu', (e) => e.preventDefault());
   
+  // ========== 鼠标位置（必须先初始化） ==========
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  
   // ========== 克隆表层世界到背后世界 ==========
   const cloneSurface = () => {
     behindContent.innerHTML = '';
@@ -404,7 +408,6 @@ function initCustomCursor() {
   const minRadius = 60;
   const maxRadius = Math.min(window.innerWidth, window.innerHeight) * 0.4; // 40%页面
   let currentRadius = minRadius;
-  let targetRadius = minRadius;
   
   // 右键状态
   let isRightMouseDown = false;
@@ -412,6 +415,11 @@ function initCustomCursor() {
   const breatheSpeed = 2;
   const breathePause = 50; // 边界处暂停帧数
   let breathePauseCounter = 0;
+  
+  // ========== 初始化光标位置 ==========
+  cursorDot.style.left = `${mouseX}px`;
+  cursorDot.style.top = `${mouseY}px`;
+  behindWorld.style.clipPath = `circle(${minRadius}px at ${mouseX}px ${mouseY}px)`;
   
   // ========== 更新取景框大小 ==========
   const updatePortalRadius = () => {
@@ -461,10 +469,6 @@ function initCustomCursor() {
       isRightMouseDown = false;
     }
   });
-  
-  // ========== 鼠标位置 ==========
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
   
   // ========== 更新光标位置 ==========
   const updateCursor = () => {
