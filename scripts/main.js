@@ -371,6 +371,7 @@ if (process?.env?.NODE_ENV === 'development') {
 function initCustomCursor() {
   const cursorDot = document.querySelector('.cursor-dot');
   const behindWorld = document.querySelector('.behind-world');
+  const behindContent = document.querySelector('.behind-content');
   
   if (!cursorDot || !behindWorld) return;
   
@@ -388,24 +389,32 @@ function initCustomCursor() {
   // 光标窗口半径
   const portalRadius = 60;
   
+  // 当前鼠标位置
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  
   // 更新光标位置和背后世界窗口
-  const updateCursor = (x, y) => {
+  const updateCursor = () => {
     // 光标小点
-    cursorDot.style.left = `${x}px`;
-    cursorDot.style.top = `${y}px`;
+    cursorDot.style.left = `${mouseX}px`;
+    cursorDot.style.top = `${mouseY}px`;
     
-    // 背后世界 clip-path 窗口
-    behindWorld.style.clipPath = `circle(${portalRadius}px at ${x}px ${y}px)`;
+    // 背后世界 clip-path（相对于视口）
+    behindWorld.style.clipPath = `circle(${portalRadius}px at ${mouseX}px ${mouseY}px)`;
   };
   
   // 鼠标移动
   document.addEventListener('mousemove', (e) => {
-    updateCursor(e.clientX, e.clientY);
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    updateCursor();
   }, { passive: true });
   
-  // 同步背后世界滚动
+  // 同步背后内容滚动（移动内容而非clip-path容器）
   const syncBehindScroll = () => {
-    behindWorld.style.transform = `translateY(-${window.scrollY}px)`;
+    if (behindContent) {
+      behindContent.style.transform = `translateY(-${window.scrollY}px)`;
+    }
   };
   
   window.addEventListener('scroll', syncBehindScroll, { passive: true });
@@ -436,10 +445,12 @@ function initCustomCursor() {
   });
   document.addEventListener('mouseenter', () => {
     cursorDot.style.opacity = '1';
+    updateCursor();
   });
   
   // 初始化
   syncBehindScroll();
+  updateCursor();
 }
 
 /* ========================================
