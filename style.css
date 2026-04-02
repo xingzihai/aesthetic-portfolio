@@ -87,10 +87,13 @@
 }
 
 html {
-  scroll-behavior: smooth;
   font-size: 16px;
-  /* Scroll Snap - 纯 CSS mandatory 模式 */
-  scroll-snap-type: y mandatory;
+  /* 禁用 CSS snap，用 JS 控制更慢的吸附 */
+}
+
+/* 平滑滚动只用于导航跳转 */
+html.smooth-scroll {
+  scroll-behavior: smooth;
 }
 
 body {

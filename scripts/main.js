@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSmoothScroll();
   initAvatarInteraction();
   initFireflies();
+  initSmoothSnap();
 });
 
 /* ========================================
@@ -363,6 +364,94 @@ if (process?.env?.NODE_ENV === 'development') {
    导出（如果需要模块化）
    ======================================== */
 // export { initScrollProgress, initNavScroll, initMobileNav, initScrollAnimations };
+
+/* ========================================
+   平滑 Scroll Snap（JS 控制，更慢的吸附速度）
+   ======================================== */
+function initSmoothSnap() {
+  // 检测减少动画偏好
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
+  
+  const sections = document.querySelectorAll('section');
+  if (sections.length === 0) return;
+  
+  let scrollTimeout = null;
+  let isSnapping = false;
+  
+  // 找到最近的 section
+  const findNearestSection = () => {
+    const scrollTop = window.scrollY;
+    const viewportHeight = window.innerHeight;
+    const viewportCenter = scrollTop + viewportHeight / 2;
+    
+    let nearest = null;
+    let minDistance = Infinity;
+    
+    sections.forEach(section => {
+      const rect = section.getBoundingClientRect();
+      const sectionCenter = rect.top + scrollTop + rect.height / 2;
+      const distance = Math.abs(viewportCenter - sectionCenter);
+      
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearest = section;
+      }
+    });
+    
+    return nearest;
+  };
+  
+  // 平滑滚动到 section
+  const snapToSection = (section) => {
+    if (!section || isSnapping) return;
+    
+    isSnapping = true;
+    
+    const targetTop = section.offsetTop;
+    const navHeight = document.querySelector('.site-nav')?.offsetHeight || 0;
+    
+    window.scrollTo({
+      top: targetTop - navHeight,
+      behavior: 'smooth'
+    });
+    
+    // 等待动画完成
+    setTimeout(() => {
+      isSnapping = false;
+    }, 800);
+  };
+  
+  // 监听滚动结束
+  window.addEventListener('scroll', () => {
+    if (isSnapping) return;
+    
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
+    
+    // 150ms 无滚动视为滚动结束
+    scrollTimeout = setTimeout(() => {
+      const nearest = findNearestSection();
+      if (nearest) {
+        snapToSection(nearest);
+      }
+    }, 150);
+  }, { passive: true });
+  
+  // 导航点击：直接跳转，不触发 snap
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', () => {
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+      isSnapping = true;
+      setTimeout(() => {
+        isSnapping = false;
+      }, 1000);
+    });
+  });
+}
 
 /* ========================================
    萤火虫粒子（外部自主飞行 + JS控制闪烁）
