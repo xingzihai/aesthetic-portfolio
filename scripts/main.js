@@ -422,9 +422,12 @@ function initCustomCursor() {
   cloneSurface();
   
   // ========== 初始化：光标居中，取景框最大 ==========
-  cursorDot.style.left = `${mouseX}px`;
-  cursorDot.style.top = `${mouseY}px`;
-  cursorDot.style.opacity = '1';
+  cursorDot.style.cssText = `
+    left: ${mouseX}px;
+    top: ${mouseY}px;
+    opacity: 1;
+    display: block;
+  `;
   behindWorld.style.clipPath = `circle(${maxRadius}px at ${mouseX}px ${mouseY}px)`;
   
   // ========== 更新取景框大小 ==========
