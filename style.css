@@ -88,12 +88,9 @@
 
 html {
   font-size: 16px;
-  /* 禁用 CSS snap，用 JS 控制更慢的吸附 */
-}
-
-/* 平滑滚动只用于导航跳转 */
-html.smooth-scroll {
   scroll-behavior: smooth;
+  /* Scroll Snap - 浏览器原生，速度快但稳定 */
+  scroll-snap-type: y mandatory;
 }
 
 body {
