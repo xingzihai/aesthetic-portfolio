@@ -379,34 +379,25 @@ function initCustomCursor() {
     return;
   }
   
-  // 光标位置
-  let mouseX = 0;
-  let mouseY = 0;
-  let currentX = 0;
-  let currentY = 0;
-  
-  // 弹簧参数
-  const spring = 0.15;
-  const damping = 0.75;
-  let vx = 0;
-  let vy = 0;
-  
-  // 监听鼠标移动
+  // 直接跟随鼠标（无弹簧延迟）
   document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+    cursorDot.style.left = `${e.clientX}px`;
+    cursorDot.style.top = `${e.clientY}px`;
   }, { passive: true });
   
   // 检测悬停元素
-  const interactiveElements = document.querySelectorAll('a, button, .nav-toggle, .gallery-card, input, textarea');
+  const interactiveSelectors = 'a, button, .nav-toggle, .gallery-card, input, textarea, [role="button"]';
   
-  interactiveElements.forEach(el => {
-    el.addEventListener('mouseenter', () => {
+  document.addEventListener('mouseover', (e) => {
+    if (e.target.matches(interactiveSelectors) || e.target.closest(interactiveSelectors)) {
       cursorDot.classList.add('hover');
-    });
-    el.addEventListener('mouseleave', () => {
+    }
+  });
+  
+  document.addEventListener('mouseout', (e) => {
+    if (e.target.matches(interactiveSelectors) || e.target.closest(interactiveSelectors)) {
       cursorDot.classList.remove('hover');
-    });
+    }
   });
   
   // 点击状态
@@ -417,31 +408,13 @@ function initCustomCursor() {
     cursorDot.classList.remove('clicking');
   });
   
-  // 动画循环
-  const animate = () => {
-    // 弹簧物理
-    const dx = mouseX - currentX;
-    const dy = mouseY - currentY;
-    
-    vx += dx * spring;
-    vy += dy * spring;
-    vx *= damping;
-    vy *= damping;
-    
-    currentX += vx;
-    currentY += vy;
-    
-    // 应用位置
-    cursorDot.style.left = `${currentX}px`;
-    cursorDot.style.top = `${currentY}px`;
-    
-    requestAnimationFrame(animate);
-  };
-  
-  // 初始化位置
-  currentX = mouseX;
-  currentY = mouseY;
-  animate();
+  // 鼠标离开窗口时隐藏光标
+  document.addEventListener('mouseleave', () => {
+    cursorDot.style.opacity = '0';
+  });
+  document.addEventListener('mouseenter', () => {
+    cursorDot.style.opacity = '1';
+  });
 }
 
 /* ========================================
