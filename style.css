@@ -178,8 +178,26 @@ body {
   --border-soft: rgba(90, 136, 112, 0.2);
   --border-medium: rgba(90, 136, 112, 0.35);
   
-  /* 图标色 */
-  --icon-color: rgba(255, 176, 112, 0.6);
+  /* 图标色 - 提高不透明度 */
+  --icon-color: #FFB070;
+}
+
+/* ========== 背后世界滚动条 ========== */
+.behind-world ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.behind-world ::-webkit-scrollbar-track {
+  background: var(--canvas-bg);
+}
+
+.behind-world ::-webkit-scrollbar-thumb {
+  background: var(--fusion-cool);
+  border-radius: 4px;
+}
+
+.behind-world ::-webkit-scrollbar-thumb:hover {
+  background: var(--monet-sky-evening);
 }
 
 /* ========== 背后世界背景 - 莫奈水面渐变 ========== */
@@ -195,6 +213,11 @@ body {
 @keyframes behind-bg-flow {
   0%, 100% { background-position: 0% 0%, 100% 100%, 50% 50%, 0% 0%; }
   50% { background-position: 100% 100%, 0% 0%, 50% 50%, 0% 0%; }
+}
+
+/* 隐藏表层光影层 */
+.behind-world .hero-light-flow {
+  display: none;
 }
 
 /* ========== 背后世界光斑 - 莫奈笔触 ========== */
@@ -331,17 +354,18 @@ body {
     rgba(184, 212, 200, 0.70) 50%,
     rgba(168, 196, 184, 0.85) 100%
   );
-  border-color: rgba(160, 200, 216, 0.45);
+  border-color: rgba(90, 136, 112, 0.5);
   box-shadow: 
     0 4px 20px rgba(42, 56, 48, 0.1),
     inset 0 0 50px rgba(160, 200, 216, 0.08);
 }
 
 .behind-world .gallery-card:hover {
-  border-color: rgba(160, 200, 216, 0.65);
+  border-color: rgba(90, 136, 112, 0.7);
+  transform: translateY(-6px);
   box-shadow: 
-    0 8px 32px rgba(42, 56, 48, 0.15),
-    0 0 30px rgba(160, 200, 216, 0.2),
+    0 12px 40px rgba(42, 56, 48, 0.15),
+    0 0 25px rgba(160, 200, 216, 0.25),
     inset 0 0 50px rgba(160, 200, 216, 0.12);
 }
 
@@ -358,12 +382,52 @@ body {
 }
 
 .behind-world .card-desc {
-  color: #4A5850;
+  color: #2A3830;
+}
+
+/* ========== 背后世界卡片内部元素 ========== */
+.behind-world .palette-preview {
+  gap: 6px;
+}
+
+.behind-world .palette-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(42, 56, 48, 0.15);
+}
+
+/* 覆盖 inline style 的莫兰迪色 */
+.behind-world .palette-dot[style*="background"] {
+  background: var(--monet-sunrise) !important;
+}
+
+.behind-world .typography-preview {
+  gap: 12px;
+}
+
+.behind-world .type-serif,
+.behind-world .type-sans {
+  color: #2A3830;
+}
+
+.behind-world .type-cn {
+  color: var(--monet-lily);
+}
+
+.behind-world .gradient-preview {
+  background: linear-gradient(135deg, var(--monet-sunrise), var(--monet-lily), var(--monet-water));
 }
 
 /* ========== 背后世界萤火虫隐藏 ========== */
 .behind-world .firefly-container {
   display: none;
+}
+
+/* ========== 背后世界六棱柱顶底面 ========== */
+.behind-world .crystal-top,
+.behind-world .crystal-bottom {
+  background: linear-gradient(135deg, rgba(255, 200, 160, 0.3), rgba(160, 200, 216, 0.2));
 }
 
 /* ========== 背后世界头像 - 朦胧太阳（第一版效果） ========== */
@@ -438,6 +502,7 @@ body {
 .behind-world .philosophy-block {
   background: rgba(216, 232, 224, 0.7);
   border-color: rgba(90, 136, 112, 0.25);
+  backdrop-filter: none;
 }
 
 .behind-world .philosophy-block:hover {
@@ -480,7 +545,11 @@ body {
 }
 
 .behind-world .skill-icon {
-  background: linear-gradient(135deg, var(--icon-color), transparent);
+  background: linear-gradient(135deg, var(--icon-color), rgba(112, 168, 192, 0.3));
+}
+
+.behind-world .icon-shape {
+  background: #2A3830;
 }
 
 /* ========== 背后世界Footer区域 ========== */
