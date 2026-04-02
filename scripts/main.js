@@ -365,7 +365,7 @@ if (process?.env?.NODE_ENV === 'development') {
 // export { initScrollProgress, initNavScroll, initMobileNav, initScrollAnimations };
 
 /* ========================================
-   萤火虫粒子（外部自主飞行）
+   萤火虫粒子（外部自主飞行 + JS控制闪烁）
    ======================================== */
 function initFireflies() {
   const container = document.querySelector('.firefly-container');
@@ -389,21 +389,15 @@ function initFireflies() {
     const el = document.createElement('span');
     el.className = `firefly ${colorTypes[i % 3]}`;
     
-    // 尺寸：6-12px，更大更明显
-    const size = 6 + Math.random() * 6;
+    // 尺寸：3-6px，小而亮
+    const size = 3 + Math.random() * 3;
     el.style.width = `${size}px`;
     el.style.height = `${size}px`;
-    
-    // 闪烁周期：2-5秒，更快更明显
-    const glowDuration = 2 + Math.random() * 3;
-    el.style.animation = `firefly-glow ${glowDuration}s ease-in-out infinite`;
-    el.style.animationDelay = `${Math.random() * glowDuration}s`;
     
     container.appendChild(el);
     
     // 状态初始化
     const containerSize = 500;
-    const half = containerSize / 2;
     
     // 初始位置：随机分布在容器内（避开中心头像区域）
     let x, y;
@@ -411,7 +405,11 @@ function initFireflies() {
     do {
       x = (Math.random() - 0.5) * containerSize;
       y = (Math.random() - 0.5) * containerSize;
-    } while (distFromCenter() < 80); // 避开中心80px区域
+    } while (distFromCenter() < 80);
+    
+    // 闪烁参数：每个萤火虫独立周期
+    const glowCycle = 2000 + Math.random() * 3000; // 2-5秒周期
+    const glowPhase = Math.random() * glowCycle; // 随机起始相位
     
     fireflies.push({
       el,
@@ -420,15 +418,17 @@ function initFireflies() {
       // 飞行参数
       vx: (Math.random() - 0.5) * 0.3,
       vy: (Math.random() - 0.5) * 0.3,
-      // 转向频率（不同萤火虫不同）
       turnInterval: 800 + Math.random() * 1500,
       lastTurn: 0,
-      // 目标方向（随机游走）
       targetVx: 0,
       targetVy: 0,
       // 边界
-      maxDist: half - 20,
-      minDist: 70 // 不进入中心头像区域
+      maxDist: containerSize / 2 - 20,
+      minDist: 70,
+      // 闪烁参数
+      glowCycle,
+      glowPhase,
+      baseOpacity: 0.15
     });
   }
   
@@ -437,32 +437,37 @@ function initFireflies() {
     const now = performance.now();
     
     fireflies.forEach(f => {
-      // 随机转向（模拟萤火虫的不规则飞行）
+      // === 闪烁控制（JS独立控制，确保持续循环） ===
+      const glowTime = (now + f.glowPhase) % f.glowCycle;
+      const glowProgress = glowTime / f.glowCycle;
+      
+      // 使用正弦波：0→1→0（亮→暗→亮）
+      const glowValue = Math.sin(glowProgress * Math.PI * 2);
+      const opacity = f.baseOpacity + glowValue * 0.85; // 0.15→1.0
+      
+      f.el.style.opacity = opacity.toFixed(2);
+      
+      // === 飞行控制 ===
       if (now - f.lastTurn > f.turnInterval) {
         f.lastTurn = now;
-        // 新目标方向：随机，但速度限制
         f.targetVx = (Math.random() - 0.5) * 0.4;
         f.targetVy = (Math.random() - 0.5) * 0.4;
       }
       
-      // 平滑过渡到目标速度
       f.vx += (f.targetVx - f.vx) * 0.02;
       f.vy += (f.targetVy - f.vy) * 0.02;
       
-      // 更新位置
       f.x += f.vx;
       f.y += f.vy;
       
-      // 边界处理：碰到边界时反弹转向
+      // 边界处理
       const dist = Math.sqrt(f.x * f.x + f.y * f.y);
       
       if (dist > f.maxDist) {
-        // 太远了，向中心转向
         const angle = Math.atan2(f.y, f.x);
         f.targetVx = -Math.cos(angle) * 0.2;
         f.targetVy = -Math.sin(angle) * 0.2;
       } else if (dist < f.minDist) {
-        // 太近了，向外转向
         const angle = Math.atan2(f.y, f.x);
         f.targetVx = Math.cos(angle) * 0.2;
         f.targetVy = Math.sin(angle) * 0.2;
