@@ -89,8 +89,6 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
-  /* Scroll Snap - proximity 模式：接近时吸附，可自由停在中间 */
-  scroll-snap-type: y proximity;
 }
 
 body {
@@ -241,8 +239,6 @@ body {
   position: relative;
   overflow: hidden;
   padding: var(--space-3xl) var(--space-lg);
-  /* Scroll Snap */
-  scroll-snap-align: start;
 }
 
 /* 背景光影流动 */
@@ -830,9 +826,7 @@ body {
   padding: var(--space-4xl) var(--space-lg);
   max-width: 1200px;
   margin: 0 auto;
-  /* Scroll Snap */
   min-height: 100vh;
-  scroll-snap-align: start;
 }
 
 .gallery-grid {
@@ -1166,9 +1160,7 @@ body {
   padding: var(--space-4xl) 0;
   position: relative;
   overflow: hidden;
-  /* Scroll Snap */
   min-height: 100vh;
-  scroll-snap-align: start;
 }
 
 .philosophy-bg {
@@ -1235,9 +1227,7 @@ body {
   padding: var(--space-4xl) var(--space-lg);
   max-width: 1200px;
   margin: 0 auto;
-  /* Scroll Snap */
   min-height: 100vh;
-  scroll-snap-align: start;
 }
 
 .skills-grid {
@@ -1319,9 +1309,7 @@ body {
   padding: var(--space-4xl) var(--space-lg);
   position: relative;
   overflow: hidden;
-  /* Scroll Snap */
   min-height: 100vh;
-  scroll-snap-align: start;
 }
 
 .footer-fade-top {
