@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
   initSmoothScroll();
   initAvatarInteraction();
-  initInnerParticles();
+  initFireflies();
 });
 
 /* ========================================
@@ -365,137 +365,111 @@ if (process?.env?.NODE_ENV === 'development') {
 // export { initScrollProgress, initNavScroll, initMobileNav, initScrollAnimations };
 
 /* ========================================
-   内部漂浮微粒交互
+   萤火虫粒子（外部自主飞行）
    ======================================== */
-function initInnerParticles() {
-  const particles = document.querySelectorAll('.inner-particle');
-  const wrapper = document.querySelector('.avatar-crystal-wrapper');
-  
-  if (particles.length === 0 || !wrapper) return;
+function initFireflies() {
+  const container = document.querySelector('.firefly-container');
+  if (!container) return;
   
   // 检测减少动画偏好
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) return;
   
-  // 获取头像中心位置（相对于视口）
-  const getCenter = () => {
-    const rect = wrapper.getBoundingClientRect();
-    return {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2
-    };
-  };
+  // 萤火虫数量
+  const count = 35;
   
-  // 微粒状态
-  const particleStates = [];
+  // 萤火虫状态数组
+  const fireflies = [];
   
-  // 初始化每个微粒
-  particles.forEach((p, i) => {
-    const isAttract = p.classList.contains('attract');
+  // 颜色类型
+  const colorTypes = ['warm', 'cool', 'pink'];
+  
+  // 创建萤火虫
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('span');
+    el.className = `firefly ${colorTypes[i % 3]}`;
     
-    // 从CSS获取初始位置百分比
-    const leftPercent = parseFloat(p.style.left) || (20 + i * 8);
-    const topPercent = parseFloat(p.style.top) || (20 + i * 8);
+    // 尺寸：3-7px，随机
+    const size = 3 + Math.random() * 4;
+    el.style.width = `${size}px`;
+    el.style.height = `${size}px`;
     
-    // 转换为像素（相对于wrapper）
-    const wrapperSize = 160; // avatar-particles-inner 尺寸
-    const baseX = (leftPercent / 100) * wrapperSize - wrapperSize / 2;
-    const baseY = (topPercent / 100) * wrapperSize - wrapperSize / 2;
+    // 闪烁周期：随机 3-8秒
+    const glowDuration = 3 + Math.random() * 5;
+    el.style.animation = `firefly-glow ${glowDuration}s ease-in-out infinite`;
+    el.style.animationDelay = `${Math.random() * glowDuration}s`;
     
-    particleStates.push({
-      el: p,
-      isAttract,
-      // 基础位置（中心为原点）
-      baseX,
-      baseY,
-      // 当前位置
-      currentX: baseX,
-      currentY: baseY,
-      // 速度
-      vx: 0,
-      vy: 0,
-      // 自主运动的相位（不同微粒不同起始相位）
-      phase: i * 0.5,
-      // 力度系数
-      strength: isAttract ? 0.03 : 0.05, // 吸引型更温和
-      maxDist: isAttract ? 40 : 35, // 影响范围
-      // 弹簧参数
-      spring: 0.04,
-      damping: 0.85
+    container.appendChild(el);
+    
+    // 状态初始化
+    const containerSize = 400;
+    const half = containerSize / 2;
+    
+    // 初始位置：随机分布在容器内（避开中心头像区域）
+    let x, y;
+    const distFromCenter = () => Math.sqrt(x * x + y * y);
+    do {
+      x = (Math.random() - 0.5) * containerSize;
+      y = (Math.random() - 0.5) * containerSize;
+    } while (distFromCenter() < 80); // 避开中心80px区域
+    
+    fireflies.push({
+      el,
+      x,
+      y,
+      // 飞行参数
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      // 转向频率（不同萤火虫不同）
+      turnInterval: 800 + Math.random() * 1500,
+      lastTurn: 0,
+      // 目标方向（随机游走）
+      targetVx: 0,
+      targetVy: 0,
+      // 边界
+      maxDist: half - 20,
+      minDist: 70 // 不进入中心头像区域
     });
-  });
-  
-  // 鼠标位置
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
-  
-  document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  }, { passive: true });
+  }
   
   // 动画循环
   const animate = () => {
-    const center = getCenter();
-    const now = performance.now() * 0.001; // 秒
+    const now = performance.now();
     
-    particleStates.forEach(state => {
-      // 计算鼠标相对于头像中心的距离
-      const dx = mouseX - center.x;
-      const dy = mouseY - center.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      
-      // 影响因子（距离越近影响越大）
-      const influence = Math.max(0, 1 - dist / state.maxDist);
-      
-      // 目标位置 = 基础位置 + 自主运动 + 光标交互
-      let targetX = state.baseX;
-      let targetY = state.baseY;
-      
-      // 自主漂浮（正弦波）
-      const idleAmp = 3; // 自主漂浮幅度
-      const idleX = Math.sin(now * 0.5 + state.phase) * idleAmp;
-      const idleY = Math.cos(now * 0.4 + state.phase * 0.7) * idleAmp;
-      targetX += idleX;
-      targetY += idleY;
-      
-      // 光标交互
-      if (dist < state.maxDist && influence > 0.1) {
-        // 影响力度
-        const force = influence * state.strength * 100;
-        
-        if (state.isAttract) {
-          // 吸引：向光标方向移动（但限制距离）
-          const attractStrength = force * 0.5;
-          targetX += dx * attractStrength * 0.02;
-          targetY += dy * attractStrength * 0.02;
-        } else {
-          // 排斥：远离光标
-          const repelStrength = force;
-          targetX -= dx * repelStrength * 0.015;
-          targetY -= dy * repelStrength * 0.015;
-        }
+    fireflies.forEach(f => {
+      // 随机转向（模拟萤火虫的不规则飞行）
+      if (now - f.lastTurn > f.turnInterval) {
+        f.lastTurn = now;
+        // 新目标方向：随机，但速度限制
+        f.targetVx = (Math.random() - 0.5) * 0.4;
+        f.targetVy = (Math.random() - 0.5) * 0.4;
       }
       
-      // 限制范围（不超出六棱柱边界）
-      const maxRange = 50;
-      targetX = Math.max(-maxRange, Math.min(maxRange, targetX));
-      targetY = Math.max(-maxRange, Math.min(maxRange, targetY));
+      // 平滑过渡到目标速度
+      f.vx += (f.targetVx - f.vx) * 0.02;
+      f.vy += (f.targetVy - f.vy) * 0.02;
       
-      // 弹簧物理
-      const fx = (targetX - state.currentX) * state.spring;
-      const fy = (targetY - state.currentY) * state.spring;
+      // 更新位置
+      f.x += f.vx;
+      f.y += f.vy;
       
-      state.vx += fx;
-      state.vy += fy;
-      state.vx *= state.damping;
-      state.vy *= state.damping;
+      // 边界处理：碰到边界时反弹转向
+      const dist = Math.sqrt(f.x * f.x + f.y * f.y);
       
-      state.currentX += state.vx;
-      state.currentY += state.vy;
+      if (dist > f.maxDist) {
+        // 太远了，向中心转向
+        const angle = Math.atan2(f.y, f.x);
+        f.targetVx = -Math.cos(angle) * 0.2;
+        f.targetVy = -Math.sin(angle) * 0.2;
+      } else if (dist < f.minDist) {
+        // 太近了，向外转向
+        const angle = Math.atan2(f.y, f.x);
+        f.targetVx = Math.cos(angle) * 0.2;
+        f.targetVy = Math.sin(angle) * 0.2;
+      }
       
-      // 应用变换（相对中心）
-      state.el.style.transform = `translate(${state.currentX}px, ${state.currentY}px)`;
+      // 应用位置
+      f.el.style.transform = `translate(${f.x}px, ${f.y}px)`;
     });
     
     requestAnimationFrame(animate);

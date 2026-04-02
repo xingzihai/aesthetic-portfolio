@@ -667,91 +667,67 @@ body {
 }
 
 /* ========================================
-   漂浮微粒（内部）
+   萤火虫粒子（外部）
    ======================================== */
-.avatar-particles-inner {
+.firefly-container {
   position: absolute;
-  width: 160px;
-  height: 160px;
+  width: 400px;
+  height: 400px;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  z-index: 5;
+  z-index: 2;
+  pointer-events: none;
 }
 
-.inner-particle {
+.firefly {
   position: absolute;
   border-radius: 50%;
-  transform-style: preserve-3d;
-  will-change: transform;
+  will-change: transform, opacity;
 }
 
-/* 微粒尺寸和颜色 */
-.inner-particle.ip1,
-.inner-particle.ip3,
-.inner-particle.ip5,
-.inner-particle.ip7 {
-  /* 吸引型 - 暖色，稍大 */
-  width: 7px;
-  height: 7px;
-  background: radial-gradient(circle at 40% 40%, 
-    rgba(255, 220, 180, 0.55) 0%, 
-    rgba(255, 200, 160, 0.25) 60%, 
+/* 萤火虫闪烁动画 */
+@keyframes firefly-glow {
+  0%, 100% { 
+    opacity: 0.2;
+    filter: blur(2px);
+  }
+  50% { 
+    opacity: 0.8;
+    filter: blur(1px);
+  }
+}
+
+/* 萤火虫颜色 - 混合暖冷色调 */
+.firefly.warm {
+  /* 暖萤火 - 淡黄橙 */
+  background: radial-gradient(circle,
+    rgba(255, 240, 200, 0.9) 0%,
+    rgba(255, 220, 180, 0.5) 50%,
     transparent 100%
   );
-  box-shadow: 0 0 8px rgba(255, 200, 180, 0.2);
+  box-shadow: 0 0 12px rgba(255, 220, 180, 0.4);
 }
 
-.inner-particle.ip2,
-.inner-particle.ip4,
-.inner-particle.ip6,
-.inner-particle.ip8 {
-  /* 排斥型 - 冷色，稍小 */
-  width: 5px;
-  height: 5px;
-  background: radial-gradient(circle at 40% 40%, 
-    rgba(180, 200, 220, 0.5) 0%, 
-    rgba(160, 190, 210, 0.2) 60%, 
+.firefly.cool {
+  /* 冷萤火 - 淡蓝白 */
+  background: radial-gradient(circle,
+    rgba(220, 240, 255, 0.9) 0%,
+    rgba(200, 220, 240, 0.5) 50%,
     transparent 100%
   );
-  box-shadow: 0 0 6px rgba(180, 200, 220, 0.15);
+  box-shadow: 0 0 10px rgba(200, 220, 240, 0.3);
 }
 
-/* 初始位置分布（在中心周围） */
-.ip1 { left: 25%; top: 30%; }
-.ip2 { left: 70%; top: 25%; }
-.ip3 { left: 50%; top: 15%; }
-.ip4 { left: 30%; top: 65%; }
-.ip5 { left: 75%; top: 55%; }
-.ip6 { left: 20%; top: 50%; }
-.ip7 { left: 60%; top: 70%; }
-.ip8 { left: 45%; top: 45%; }
-
-/* 自主漂浮动画（基础动画） */
-@keyframes inner-idle-1 {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(6px, -4px); }
-  50% { transform: translate(8px, 3px); }
-  75% { transform: translate(2px, 6px); }
+.firefly.pink {
+  /* 粉萤火 - 淡粉 */
+  background: radial-gradient(circle,
+    rgba(255, 230, 240, 0.9) 0%,
+    rgba(255, 210, 225, 0.5) 50%,
+    transparent 100%
+  );
+  box-shadow: 0 0 10px rgba(255, 210, 225, 0.35);
 }
-@keyframes inner-idle-2 {
-  0%, 100% { transform: translate(0, 0); }
-  33% { transform: translate(-5px, 4px); }
-  66% { transform: translate(-3px, -2px); }
-}
-@keyframes inner-idle-3 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(4px, -6px); }
-}
-
-.ip1 { animation: inner-idle-1 12s ease-in-out infinite; }
-.ip2 { animation: inner-idle-2 14s ease-in-out infinite; }
-.ip3 { animation: inner-idle-3 10s ease-in-out infinite; }
-.ip4 { animation: inner-idle-1 13s ease-in-out infinite reverse; }
-.ip5 { animation: inner-idle-2 11s ease-in-out infinite; }
-.ip6 { animation: inner-idle-3 15s ease-in-out infinite reverse; }
-.ip7 { animation: inner-idle-1 16s ease-in-out infinite; }
-.ip8 { animation: inner-idle-2 12s ease-in-out infinite reverse; }
 
 /* ========================================
    Hero 标识
