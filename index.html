@@ -17,13 +17,10 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- 自定义光标 -->
-  <div class="cursor-layer">
-    <div class="cursor-dot"></div>
-  </div>
-  
-  <!-- ========== 导航栏 ========== -->
-  <nav class="site-nav">
+  <!-- ========== 表层页面（莫兰迪主导） ========== -->
+  <div class="surface-world">
+    <!-- 导航栏 -->
+    <nav class="site-nav">
     <div class="nav-container">
       <a href="#hero" class="nav-logo">xingzihai</a>
       <div class="nav-links">
@@ -379,6 +376,38 @@
   
   <!-- 滚动进度条 -->
   <div class="scroll-progress"></div>
+  </div>
+  
+  <!-- ========== 背后世界层（莫奈主导） ========== -->
+  <div class="behind-world">
+    <!-- 背后世界内容：与表层相同的结构，通过 CSS 变量使用莫奈配色 -->
+    <div class="behind-content">
+      <!-- Hero 区 -->
+      <section class="hero behind-hero">
+        <div class="behind-avatar-placeholder"></div>
+        <h1 class="hero-name">xingzihai</h1>
+        <p class="hero-tagline">星光落入冰水，温暖慢慢渗透</p>
+      </section>
+      
+      <!-- Gallery 区 -->
+      <section class="gallery-section behind-gallery">
+        <h2 class="section-title">作品</h2>
+        <div class="gallery-grid">
+          <div class="gallery-card-placeholder"></div>
+          <div class="gallery-card-placeholder"></div>
+          <div class="gallery-card-placeholder"></div>
+          <div class="gallery-card-placeholder"></div>
+          <div class="gallery-card-placeholder"></div>
+          <div class="gallery-card-placeholder"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+  
+  <!-- ========== 光标层 ========== -->
+  <div class="cursor-layer">
+    <div class="cursor-dot"></div>
+  </div>
   
   <!-- JavaScript -->
   <script src="scripts/main.js"></script>

@@ -107,13 +107,127 @@ body {
   color: var(--text-inverse);
 }
 
+/* ========== 表层世界（莫兰迪主导） ========== */
+.surface-world {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* ========== 背后世界层（莫奈主导） ========== */
+.behind-world {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+  /* 莫奈配色 */
+  --behind-bg: #A8C4B8;
+  --behind-text: #2A3830;
+  --behind-accent: #FFB070;
+  --behind-glow: rgba(255, 200, 160, 0.3);
+  /* 默认完全隐藏 */
+  clip-path: circle(0px at 50% 50%);
+  transition: clip-path 0.05s linear;
+}
+
+.behind-content {
+  width: 100%;
+  min-height: 100%;
+  background: var(--behind-bg);
+  /* 同步滚动位置 */
+  transform: translateY(0);
+}
+
+.behind-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-3xl) var(--space-lg);
+  background: linear-gradient(
+    135deg,
+    rgba(168, 196, 184, 1) 0%,
+    rgba(160, 200, 216, 0.6) 50%,
+    rgba(168, 196, 184, 1) 100%
+  );
+}
+
+.behind-avatar-placeholder {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--behind-accent) 0%,
+    rgba(255, 200, 160, 0.4) 50%,
+    transparent 70%
+  );
+  margin-bottom: var(--space-xl);
+  animation: behind-pulse 4s ease-in-out infinite;
+}
+
+@keyframes behind-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+.behind-hero .hero-name {
+  color: var(--behind-text);
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 700;
+}
+
+.behind-hero .hero-tagline {
+  color: rgba(42, 56, 48, 0.7);
+  font-size: 20px;
+  margin-top: var(--space-sm);
+}
+
+.behind-gallery {
+  padding: var(--space-4xl) var(--space-lg);
+  min-height: 100vh;
+  background: rgba(160, 200, 216, 0.3);
+}
+
+.behind-gallery .section-title {
+  color: var(--behind-text);
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 36px;
+  margin-bottom: var(--space-xl);
+}
+
+.behind-gallery .gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.gallery-card-placeholder {
+  height: 200px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 176, 112, 0.3) 0%,
+    rgba(255, 200, 216, 0.2) 100%
+  );
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 176, 112, 0.2);
+}
+
 /* ========== 自定义光标 ========== */
 /* 隐藏所有元素的系统光标 */
 *, *::before, *::after {
   cursor: none !important;
 }
 
-/* 光标容器 */
+/* 光标层 */
 .cursor-layer {
   position: fixed;
   top: 0;
@@ -124,31 +238,30 @@ body {
   z-index: 9999;
 }
 
-/* 光标黑点 */
+/* 光标中心点 */
 .cursor-dot {
   position: fixed;
-  width: 24px;
-  height: 24px;
-  background: #000;
+  width: 8px;
+  height: 8px;
+  background: var(--behind-accent, #FFB070);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 10000;
-  will-change: left, top;
-  transition: width 0.15s ease-out, height 0.15s ease-out, background 0.15s ease-out;
+  opacity: 0.9;
+  transition: width 0.15s, height 0.15s;
+  box-shadow: 0 0 10px rgba(255, 176, 112, 0.5);
 }
 
-/* 悬停状态 */
 .cursor-dot.hover {
-  width: 48px;
-  height: 48px;
-  background: rgba(0, 0, 0, 0.7);
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 0 15px rgba(255, 176, 112, 0.8);
 }
 
-/* 点击状态 */
 .cursor-dot.clicking {
-  width: 16px;
-  height: 16px;
+  width: 6px;
+  height: 6px;
 }
 
 /* ========== 滚动条 ========== */

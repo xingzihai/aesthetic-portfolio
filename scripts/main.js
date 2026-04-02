@@ -366,31 +366,51 @@ if (process?.env?.NODE_ENV === 'development') {
 // export { initScrollProgress, initNavScroll, initMobileNav, initScrollAnimations };
 
 /* ========================================
-   自定义光标系统
+   自定义光标系统 + 背后世界窗口
    ======================================== */
 function initCustomCursor() {
   const cursorDot = document.querySelector('.cursor-dot');
-  if (!cursorDot) return;
+  const behindWorld = document.querySelector('.behind-world');
+  
+  if (!cursorDot || !behindWorld) return;
   
   // 检测触摸设备
   if ('ontouchstart' in window) {
     cursorDot.style.display = 'none';
+    behindWorld.style.display = 'none';
     document.body.style.cursor = 'auto';
     return;
   }
   
   // 禁用右键菜单
-  document.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-  });
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
   
-  // 直接跟随鼠标（无弹簧延迟）
+  // 光标窗口半径
+  const portalRadius = 60;
+  
+  // 更新光标位置和背后世界窗口
+  const updateCursor = (x, y) => {
+    // 光标小点
+    cursorDot.style.left = `${x}px`;
+    cursorDot.style.top = `${y}px`;
+    
+    // 背后世界 clip-path 窗口
+    behindWorld.style.clipPath = `circle(${portalRadius}px at ${x}px ${y}px)`;
+  };
+  
+  // 鼠标移动
   document.addEventListener('mousemove', (e) => {
-    cursorDot.style.left = `${e.clientX}px`;
-    cursorDot.style.top = `${e.clientY}px`;
+    updateCursor(e.clientX, e.clientY);
   }, { passive: true });
   
-  // 检测悬停元素
+  // 同步背后世界滚动
+  const syncBehindScroll = () => {
+    behindWorld.style.transform = `translateY(-${window.scrollY}px)`;
+  };
+  
+  window.addEventListener('scroll', syncBehindScroll, { passive: true });
+  
+  // 悬停检测
   const interactiveSelectors = 'a, button, .nav-toggle, .gallery-card, input, textarea, [role="button"]';
   
   document.addEventListener('mouseover', (e) => {
@@ -406,20 +426,20 @@ function initCustomCursor() {
   });
   
   // 点击状态
-  document.addEventListener('mousedown', () => {
-    cursorDot.classList.add('clicking');
-  });
-  document.addEventListener('mouseup', () => {
-    cursorDot.classList.remove('clicking');
-  });
+  document.addEventListener('mousedown', () => cursorDot.classList.add('clicking'));
+  document.addEventListener('mouseup', () => cursorDot.classList.remove('clicking'));
   
-  // 鼠标离开窗口时隐藏光标
+  // 鼠标离开窗口
   document.addEventListener('mouseleave', () => {
     cursorDot.style.opacity = '0';
+    behindWorld.style.clipPath = 'circle(0px at 50% 50%)';
   });
   document.addEventListener('mouseenter', () => {
     cursorDot.style.opacity = '1';
   });
+  
+  // 初始化
+  syncBehindScroll();
 }
 
 /* ========================================
