@@ -389,13 +389,13 @@ function initFireflies() {
     const el = document.createElement('span');
     el.className = `firefly ${colorTypes[i % 3]}`;
     
-    // 尺寸：3-7px，随机
-    const size = 3 + Math.random() * 4;
+    // 尺寸：6-12px，更大更明显
+    const size = 6 + Math.random() * 6;
     el.style.width = `${size}px`;
     el.style.height = `${size}px`;
     
-    // 闪烁周期：随机 3-8秒
-    const glowDuration = 3 + Math.random() * 5;
+    // 闪烁周期：2-5秒，更快更明显
+    const glowDuration = 2 + Math.random() * 3;
     el.style.animation = `firefly-glow ${glowDuration}s ease-in-out infinite`;
     el.style.animationDelay = `${Math.random() * glowDuration}s`;
     
