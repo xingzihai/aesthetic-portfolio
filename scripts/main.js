@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSmoothScroll();
   initAvatarInteraction();
   initFireflies();
+  initWheelScroll();
 });
 
 /* ========================================
@@ -363,6 +364,39 @@ if (process?.env?.NODE_ENV === 'development') {
    导出（如果需要模块化）
    ======================================== */
 // export { initScrollProgress, initNavScroll, initMobileNav, initScrollAnimations };
+
+/* ========================================
+   滚轮滚动控制（减少每次滚动距离）
+   ======================================== */
+function initWheelScroll() {
+  // 检测减少动画偏好
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
+  
+  // 触摸设备不启用（保持原生体验）
+  if ('ontouchstart' in window) return;
+  
+  // 滚动步进值（默认浏览器约100px，减少到60px）
+  const scrollStep = 60;
+  
+  // 监听滚轮事件
+  window.addEventListener('wheel', (e) => {
+    // 忽略缩放操作
+    if (e.ctrlKey) return;
+    
+    // 阻止默认滚动
+    e.preventDefault();
+    
+    // 计算滚动方向和距离
+    const delta = e.deltaY > 0 ? scrollStep : -scrollStep;
+    
+    // 平滑滚动
+    window.scrollBy({
+      top: delta,
+      behavior: 'smooth'
+    });
+  }, { passive: false });
+}
 
 /* ========================================
    萤火虫粒子（外部自主飞行 + JS控制闪烁）
