@@ -406,15 +406,15 @@ function initCustomCursor() {
   
   // ========== 取景框参数 ==========
   const minRadius = 60;
-  const maxRadius = Math.min(window.innerWidth, window.innerHeight) * 0.4; // 40%页面
+  const maxRadius = Math.min(window.innerWidth, window.innerHeight) * 0.4;
   let currentRadius = minRadius;
   
   // 右键状态
   let isRightMouseDown = false;
-  let breatheDirection = 1; // 1 = 变大, -1 = 变小
-  const breatheSpeed = 2;
-  const breathePause = 50; // 边界处暂停帧数
-  let breathePauseCounter = 0;
+  
+  // 呼吸动画参数
+  let breathePhase = 0;
+  const breatheSpeed = 0.008; // 慢速呼吸
   
   // ========== 初始化光标位置 ==========
   cursorDot.style.left = `${mouseX}px`;
@@ -424,26 +424,19 @@ function initCustomCursor() {
   // ========== 更新取景框大小 ==========
   const updatePortalRadius = () => {
     if (isRightMouseDown) {
-      // 按住右键：呼吸效果
-      if (breathePauseCounter > 0) {
-        breathePauseCounter--;
-      } else {
-        currentRadius += breatheSpeed * breatheDirection;
-        
-        if (currentRadius >= maxRadius) {
-          currentRadius = maxRadius;
-          breatheDirection = -1;
-          breathePauseCounter = breathePause;
-        } else if (currentRadius <= minRadius * 1.5) {
-          currentRadius = minRadius * 1.5;
-          breatheDirection = 1;
-          breathePauseCounter = breathePause;
-        }
-      }
+      // 按住右键：正弦呼吸效果（朦胧美）
+      breathePhase += breatheSpeed;
+      
+      // 正弦波：0 → 1 → 0 → 1 → ...
+      const sinValue = (Math.sin(breathePhase) + 1) / 2;
+      
+      // 从 minRadius 到 maxRadius 的柔和变化
+      currentRadius = minRadius + (maxRadius - minRadius) * sinValue;
     } else {
-      // 松开右键：弹回初始大小
-      const spring = 0.15;
+      // 松开右键：弹簧弹回（这个效果保留）
+      const spring = 0.12;
       currentRadius += (minRadius - currentRadius) * spring;
+      breathePhase = 0; // 重置相位
     }
   };
   
@@ -459,8 +452,6 @@ function initCustomCursor() {
   document.addEventListener('mousedown', (e) => {
     if (e.button === 2) { // 右键
       isRightMouseDown = true;
-      breatheDirection = 1;
-      breathePauseCounter = 0;
     }
   });
   
