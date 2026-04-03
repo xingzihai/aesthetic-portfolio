@@ -427,45 +427,50 @@ function initCustomCursor() {
 
   cloneSurface();
 
-  // ========== 初始化：光标居中，取景框最大固定在中心 ==========
+  // ========== 初始化：光标隐藏，取景框最大固定在中心 ==========
   cursorDot.style.cssText = `
     left: ${mouseX}px;
     top: ${mouseY}px;
-    opacity: 1;
+    opacity: 0;
     display: block;
   `;
   // 取景框固定在中心
   behindWorld.style.clipPath = `circle(${maxRadius}px at ${centerX}px ${centerY}px)`;
 
+  // ========== 激活函数 ==========
+  const activate = (mx, my) => {
+    if (isActivated) return;
+    isActivated = true;
+    // 显示光标
+    cursorDot.style.opacity = '1';
+    // 取景框位置锁定到光标
+    portalX = mx;
+    portalY = my;
+  };
+
   // ========== 激活检测：光标进入取景框 ==========
   const checkActivation = (mx, my) => {
-    if (isActivated) return true;
+    if (isActivated) return;
 
     // 计算光标到中心的距离
     const dist = Math.sqrt((mx - centerX) ** 2 + (my - centerY) ** 2);
 
     // 光标进入取景框内部 → 激活
     if (dist < currentRadius) {
-      isActivated = true;
-      // 取景框位置立即锁定到光标位置
-      portalX = mx;
-      portalY = my;
-      return true;
+      activate(mx, my);
     }
-
-    return false;
   };
 
   // ========== 更新取景框大小 ==========
   const updatePortalRadius = () => {
-    if (isRightMouseDown) {
-      // 按住右键：呼吸效果
+    if (isRightMouseDown && isActivated) {
+      // 按住右键且已激活：呼吸效果
       breathePhase += breatheSpeed;
       const cosValue = (1 - Math.cos(breathePhase)) / 2;
       currentRadius = minRadius + (maxRadius - minRadius) * cosValue;
     } else if (isActivated) {
-      // 已激活：弹回 minRadius
-      const spring = 0.12;
+      // 已激活：慢速吸附到 minRadius
+      const spring = 0.04;  // 更慢更柔和
       currentRadius += (minRadius - currentRadius) * spring;
     } else {
       // 未激活：保持最大
@@ -492,29 +497,29 @@ function initCustomCursor() {
   };
   animate();
 
-  // ========== 右键事件 ==========
+  // ========== 右键事件（仅激活后生效） ==========  
   document.addEventListener('mousedown', (e) => {
-    if (e.button === 2) { // 右键
+    if (e.button === 2 && isActivated) { // 右键且已激活
       isRightMouseDown = true;
       // 重置：从初始大小开始动画
       currentRadius = minRadius;
       breathePhase = 0;
     }
   });
-
+  
   document.addEventListener('mouseup', (e) => {
     if (e.button === 2) { // 右键
       isRightMouseDown = false;
     }
   });
 
-  // 鼠标移动：始终更新光标位置，检测激活  
+  // 鼠标移动：始终更新光标位置，检测激活
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
     cursorDot.style.left = `${mouseX}px`;
     cursorDot.style.top = `${mouseY}px`;
-    
+
     // 检测是否激活
     checkActivation(mouseX, mouseY);
   }, { passive: true });
@@ -551,11 +556,29 @@ function initCustomCursor() {
 
   // 鼠标离开窗口
   document.addEventListener('mouseleave', () => {
-    cursorDot.style.opacity = '0';
+    if (isActivated) cursorDot.style.opacity = '0';
   });
   document.addEventListener('mouseenter', () => {
-    cursorDot.style.opacity = '1';
+    if (isActivated) cursorDot.style.opacity = '1';
   });
+  
+  // ========== 滚动激活：到达"光的练习"区块自动激活 ==========  
+  const gallerySection = document.querySelector('#gallery');
+  if (gallerySection) {
+    const scrollObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !isActivated) {
+          // 区块进入视口 → 自动激活，取景框吸附到当前光标位置
+          activate(mouseX, mouseY);
+        }
+      });
+    }, {
+      threshold: 0.2,  // 区块20%可见时触发
+      rootMargin: '0px 0px -50px 0px'
+    });
+    
+    scrollObserver.observe(gallerySection);
+  }
 
   // 初始化
   syncBehindScroll();
