@@ -427,10 +427,11 @@ function initCustomCursor() {
 
   cloneSurface();
 
-  // ========== 初始化：光标隐藏，取景框最大固定在中心 ==========
+  // 光标是否已定位（首次mousemove）
+  let cursorLocated = false;
+
+  // ========== 初始化：光标隐藏等待首次移动，取景框最大固定在中心 ==========
   cursorDot.style.cssText = `
-    left: ${mouseX}px;
-    top: ${mouseY}px;
     opacity: 0;
     display: block;
   `;
@@ -441,8 +442,6 @@ function initCustomCursor() {
   const activate = (mx, my) => {
     if (isActivated) return;
     isActivated = true;
-    // 显示光标
-    cursorDot.style.opacity = '1';
     // 取景框位置锁定到光标
     portalX = mx;
     portalY = my;
@@ -497,7 +496,7 @@ function initCustomCursor() {
   };
   animate();
 
-  // ========== 右键事件（仅激活后生效） ==========  
+  // ========== 右键事件（仅激活后生效） ==========
   document.addEventListener('mousedown', (e) => {
     if (e.button === 2 && isActivated) { // 右键且已激活
       isRightMouseDown = true;
@@ -506,19 +505,25 @@ function initCustomCursor() {
       breathePhase = 0;
     }
   });
-  
+
   document.addEventListener('mouseup', (e) => {
     if (e.button === 2) { // 右键
       isRightMouseDown = false;
     }
   });
 
-  // 鼠标移动：始终更新光标位置，检测激活
+  // 鼠标移动：首次定位后跟随，检测激活
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
     cursorDot.style.left = `${mouseX}px`;
     cursorDot.style.top = `${mouseY}px`;
+    
+    // 首次移动：显示光标
+    if (!cursorLocated) {
+      cursorLocated = true;
+      cursorDot.style.opacity = '1';
+    }
 
     // 检测是否激活
     checkActivation(mouseX, mouseY);
@@ -554,15 +559,15 @@ function initCustomCursor() {
     if (e.button === 0) cursorDot.classList.remove('clicking');
   });
 
-  // 鼠标离开窗口
+  // 鼠标离开/进入窗口
   document.addEventListener('mouseleave', () => {
-    if (isActivated) cursorDot.style.opacity = '0';
+    cursorDot.style.opacity = '0';
   });
   document.addEventListener('mouseenter', () => {
-    if (isActivated) cursorDot.style.opacity = '1';
+    cursorDot.style.opacity = '1';
   });
-  
-  // ========== 滚动激活：到达"光的练习"区块自动激活 ==========  
+
+  // ========== 滚动激活：到达"光的练习"区块自动激活 ==========
   const gallerySection = document.querySelector('#gallery');
   if (gallerySection) {
     const scrollObserver = new IntersectionObserver((entries) => {
@@ -576,7 +581,7 @@ function initCustomCursor() {
       threshold: 0.2,  // 区块20%可见时触发
       rootMargin: '0px 0px -50px 0px'
     });
-    
+
     scrollObserver.observe(gallerySection);
   }
 
