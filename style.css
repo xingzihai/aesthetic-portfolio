@@ -135,6 +135,37 @@ body {
   /* 高度由内容决定，通过JS同步滚动 */
 }
 
+/* ========== 背后世界渐隐带（印象派柔和边界） ========== */
+.behind-world-fade {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2;  /* 在 behind-content 之上 */
+  
+  /* 从取景框边缘向外渐隐 - 印象派笔触风格 */
+  background: radial-gradient(
+    circle at var(--portal-x, 50%) var(--portal-y, 50%),
+    /* 中心：完全透明（取景框内部） */
+    transparent 0%,
+    /* 取景框边缘内5px：开始渐隐 */
+    transparent calc(var(--portal-radius, 60px) - 5px),
+    /* 取景框边缘：主渐隐层（莫奈水面绿调） */
+    rgba(168, 196, 184, 0.18) var(--portal-radius, 60px),
+    /* 边缘外15px：次渐隐层 */
+    rgba(168, 196, 184, 0.10) calc(var(--portal-radius, 60px) + 15px),
+    /* 边缘外25px：柔化过渡 */
+    rgba(168, 196, 184, 0.05) calc(var(--portal-radius, 60px) + 25px),
+    /* 边缘外30px：完全消失 */
+    transparent calc(var(--portal-radius, 60px) + 30px)
+  );
+  
+  /* GPU加速 */
+  will-change: background;
+}
+
 /* ========== 背后世界莫奈配色覆盖 ========== */
 .behind-world,
 .behind-world * {
@@ -2050,6 +2081,19 @@ body {
   
   .p4, .p5 {
     display: none;
+  }
+  
+  /* ========== 背后世界渐隐带降级 ========== */
+  /* 渐隐带宽度减小（15px过渡） */
+  .behind-world-fade {
+    background: radial-gradient(
+      circle at var(--portal-x, 50%) var(--portal-y, 50%),
+      transparent 0%,
+      transparent calc(var(--portal-radius, 60px) - 3px),
+      rgba(168, 196, 184, 0.15) var(--portal-radius, 60px),
+      rgba(168, 196, 184, 0.08) calc(var(--portal-radius, 60px) + 8px),
+      transparent calc(var(--portal-radius, 60px) + 15px)
+    );
   }
 }
 
