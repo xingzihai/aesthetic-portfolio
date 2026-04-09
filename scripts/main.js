@@ -4,8 +4,8 @@
    更新：涟漪交互效果 v1.0
    ======================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
-  // 初始化所有模块
+// 初始化函数
+function initAll() {
   initScrollProgress();
   initNavScroll();
   initMobileNav();
@@ -15,7 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
   initFireflies();
   initCustomCursor();
   initClickRipple();
-});
+}
+
+// 如果 DOM 已加载完成，直接初始化；否则等待 DOMContentLoaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAll);
+} else {
+  initAll();
+}
 
 /* ========================================
    滚动进度条
@@ -859,3 +866,5 @@ function initFireflies() {
 
   animate();
 }
+
+// 涟漪交互效果 v1.0 - 强制更新 2024-04-09
