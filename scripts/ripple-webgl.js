@@ -1,5 +1,5 @@
 /**
- * WebGL 涟漪折射系统 v1.0
+ * WebGL 涟漪折射系统 v1.1
  * 
  * 核心原理：
  * 1. html2canvas 截取页面内容 → 生成纹理
@@ -8,26 +8,38 @@
  *    - 波峰：采样更外的像素（内容向外扩散）
  *    - 波谷：采样更内的像素（内容向内收缩）
  * 4. GPU 并行渲染 → 高性能涟漪折射效果
+ * 
+ * v1.1 修复：
+ * - 使用 getComputedStyle 读取 clip-path
+ * - 添加 html2canvas 加载检查
+ * - 修复 Shader 编译失败后资源泄漏
+ * - 排除涟漪 Canvas 避免递归捕获
+ * - 分离动画 ID 避免双 Canvas 冲突
  */
 
 function initWebGLRipple() {
   // 触屏设备不启用
   if ('ontouchstart' in window) return;
   
+  // ========== Bug Fix: html2canvas 加载检查 ==========
+  if (typeof html2canvas === 'undefined') {
+    console.warn('html2canvas 未加载，涟漪系统禁用');
+    return;
+  }
+  
   // ========== 配置参数 ==========
   const config = {
     maxRipples: 3,
-    maxRadius: 400,          // 增大涟漪半径
-    expandSpeed: 3,          // 加快扩散速度
-    waveSpeed: 0.5,          // 加快波形传播
-    frequency: 0.025,        // 降低频率，波纹更宽
-    maxDisplacement: 25,     // 大幅增强折射效果
+    maxRadius: 400,
+    expandSpeed: 3,
+    waveSpeed: 0.5,
+    frequency: 0.025,
+    maxDisplacement: 25,
     fadeStart: 0.6
   };
   
   // ========== Shader 源码 ==========
   
-  // Vertex Shader - 全屏 Quad
   const vertexShaderSource = `
     attribute vec2 a_position;
     attribute vec2 a_texCoord;
@@ -40,7 +52,6 @@ function initWebGLRipple() {
     }
   `;
   
-  // Fragment Shader - 涟漪折射（涟漪区域外透明）
   const fragmentShaderSource = `
     precision mediump float;
     
@@ -59,11 +70,9 @@ function initWebGLRipple() {
     void main() {
       vec2 screenPos = v_texCoord * u_resolution;
       
-      // 默认透明（涟漪区域外显示原始 DOM）
       vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
       float totalWeight = 0.0;
       
-      // 遍历所有活跃涟漪
       for (int i = 0; i < 3; i++) {
         if (i >= u_rippleCount) break;
         
@@ -72,41 +81,30 @@ function initWebGLRipple() {
         float phase = u_ripplePhases[i];
         float opacity = u_rippleOpacities[i];
         
-        // 计算到涟漪中心的距离
         vec2 delta = screenPos - center;
         float distance = length(delta);
         
-        // 不在涟漪范围内 → 跳过
         if (distance > radius) continue;
         
-        // 计算波形高度
         float waveHeight = sin(distance * u_frequency - phase);
         
-        // 距离衰减
         float progress = distance / radius;
         float decay = 1.0 - progress * progress;
         
-        // 计算折射偏移
-        vec2 direction = delta / max(distance, 1.0);  // normalize，避免 distance=0
+        vec2 direction = delta / max(distance, 1.0);
         float displacement = waveHeight * decay * u_maxDisplacement * opacity;
         vec2 offset = direction * displacement / u_resolution;
         
-        // 偏移纹理坐标
         vec2 distortedUV = v_texCoord + offset;
-        
-        // 边界检查
         distortedUV = clamp(distortedUV, 0.0, 1.0);
         
-        // 采样背景纹理
         vec4 distortedColor = texture2D(u_background, distortedUV);
         
-        // 混合涟漪效果（多涟漪叠加）
         float blendWeight = opacity * decay;
         color = mix(color, distortedColor, blendWeight / max(totalWeight + blendWeight, 0.001));
         totalWeight += blendWeight;
       }
       
-      // 涟漪区域外 alpha = 0（透明），涟漪区域内 alpha = 1
       if (totalWeight > 0.01) {
         color.a = 1.0;
       }
@@ -126,7 +124,7 @@ function initWebGLRipple() {
     width: 100%; height: 100%;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.1s ease;
+    transition: opacity 0.15s ease-out;
   `;
   
   surfaceCanvas.id = 'ripple-webgl-surface';
@@ -148,8 +146,11 @@ function initWebGLRipple() {
     premultipliedAlpha: false 
   });
   
+  // ========== Bug Fix: WebGL 不支持时清理 Canvas ==========
   if (!surfaceGL || !behindGL) {
     console.warn('WebGL 不支持，涟漪系统禁用');
+    surfaceCanvas.remove();
+    behindCanvas.remove();
     return;
   }
   
@@ -157,8 +158,10 @@ function initWebGLRipple() {
   
   let canvasWidth = window.innerWidth;
   let canvasHeight = window.innerHeight;
-  let dpr = Math.min(window.devicePixelRatio || 1, 2);  // 限制 DPR
+  let dpr = Math.min(window.devicePixelRatio || 1, 2);
   
+  // 节流 resize
+  let resizeTimeout = null;
   const resizeCanvases = () => {
     canvasWidth = window.innerWidth;
     canvasHeight = window.innerHeight;
@@ -170,13 +173,16 @@ function initWebGLRipple() {
       canvas.style.height = `${canvasHeight}px`;
     });
     
-    // 重新设置 WebGL viewport
     surfaceGL.viewport(0, 0, surfaceCanvas.width, surfaceCanvas.height);
     behindGL.viewport(0, 0, behindCanvas.width, behindCanvas.height);
   };
   
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(resizeCanvases, 100);
+  });
+  
   resizeCanvases();
-  window.addEventListener('resize', resizeCanvases);
   
   // ========== Shader 编译 ==========
   
@@ -194,7 +200,14 @@ function initWebGLRipple() {
     return shader;
   }
   
+  // ========== Bug Fix: Shader 编译失败后清理资源 ==========
   function createProgram(gl, vertexShader, fragmentShader) {
+    if (!vertexShader || !fragmentShader) {
+      if (vertexShader) gl.deleteShader(vertexShader);
+      if (fragmentShader) gl.deleteShader(fragmentShader);
+      return null;
+    }
+    
     const program = gl.createProgram();
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
@@ -203,13 +216,14 @@ function initWebGLRipple() {
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error('Program 链接错误:', gl.getProgramInfoLog(program));
       gl.deleteProgram(program);
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
       return null;
     }
     
     return program;
   }
   
-  // 为两个 GL Context 创建 Program
   const surfaceVS = createShader(surfaceGL, surfaceGL.VERTEX_SHADER, vertexShaderSource);
   const surfaceFS = createShader(surfaceGL, surfaceGL.FRAGMENT_SHADER, fragmentShaderSource);
   const surfaceProgram = createProgram(surfaceGL, surfaceVS, surfaceFS);
@@ -220,29 +234,30 @@ function initWebGLRipple() {
   
   if (!surfaceProgram || !behindProgram) {
     console.error('WebGL Program 创建失败');
+    surfaceCanvas.remove();
+    behindCanvas.remove();
     return;
   }
   
   // ========== 全屏 Quad 几何数据 ==========
   
-  // 顶点位置（NDC 坐标：-1 到 1）
   const positions = new Float32Array([
-    -1, -1,   // 左下
-     1, -1,   // 右下
-    -1,  1,   // 左上
-     1,  1    // 右上
+    -1, -1,
+     1, -1,
+    -1,  1,
+     1,  1
   ]);
   
-  // 纹理坐标（0 到 1）
   const texCoords = new Float32Array([
-    0, 0,   // 左下
-    1, 0,   // 右下
-    0, 1,   // 左上
-    1, 1    // 右上
+    0, 0,
+    1, 0,
+    0, 1,
+    1, 1
   ]);
   
-  // 创建 Buffer 并上传数据（为两个 GL Context）
   function setupBuffers(gl, program) {
+    gl.useProgram(program);
+    
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
@@ -266,7 +281,6 @@ function initWebGLRipple() {
   // ========== Uniform 变量管理 ==========
   
   function getUniformLocations(gl, program) {
-    // 数组 uniform 需逐个获取（如 u_rippleCenters[0], u_rippleCenters[1]）
     const rippleCenters = [];
     const rippleRadii = [];
     const ripplePhases = [];
@@ -297,24 +311,18 @@ function initWebGLRipple() {
   
   // ========== 纹理管理 ==========
   
-  let surfaceTexture = null;
-  let behindTexture = null;
+  let surfaceTexture = createTexture(surfaceGL);
+  let behindTexture = createTexture(behindGL);
   
   function createTexture(gl) {
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    
-    // 设置纹理参数
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    
     return texture;
   }
-  
-  surfaceTexture = createTexture(surfaceGL);
-  behindTexture = createTexture(behindGL);
   
   // ========== 涟漪管理 ==========
   
@@ -350,43 +358,42 @@ function initWebGLRipple() {
   // ========== 渲染函数 ==========
   
   function render(gl, program, uniforms, texture) {
-    // 清空 Canvas（透明背景）
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     
     gl.useProgram(program);
     
-    // 设置分辨率 uniform
     gl.uniform2f(uniforms.resolution, canvasWidth * dpr, canvasHeight * dpr);
-    
-    // 设置涟漪参数 uniform（逐个设置，兼容 WebGL）
     gl.uniform1i(uniforms.rippleCount, ripples.length);
     gl.uniform1f(uniforms.frequency, config.frequency);
     gl.uniform1f(uniforms.maxDisplacement, config.maxDisplacement);
     
     ripples.forEach((ripple, i) => {
-      // 逐个设置数组元素（WebGL 不支持 uniform2fv 整体赋值数组）
       gl.uniform2f(uniforms.rippleCenters[i], ripple.x * dpr, ripple.y * dpr);
       gl.uniform1f(uniforms.rippleRadii[i], ripple.radius * dpr);
       gl.uniform1f(uniforms.ripplePhases[i], ripple.phase);
       gl.uniform1f(uniforms.rippleOpacities[i], ripple.opacity);
     });
     
-    // 绑定纹理
+    // 清除未使用的 uniform
+    for (let i = ripples.length; i < 3; i++) {
+      gl.uniform1f(uniforms.rippleOpacities[i], 0);
+    }
+    
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.uniform1i(uniforms.background, 0);
     
-    // 绘制全屏 Quad
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
   
-  // ========== 动画状态 ==========
+  // ========== Bug Fix: 分离动画 ID ==========
   
-  let animationId = null;
+  let surfaceAnimationId = null;
+  let behindAnimationId = null;
   let lastTime = performance.now();
   
-  // ========== 纹理捕获（html2canvas 集成） ==========
+  // ========== Bug Fix: 纹理捕获排除涟漪 Canvas ==========
   
   async function captureTexture(isBehind = false) {
     const element = isBehind 
@@ -396,12 +403,15 @@ function initWebGLRipple() {
     if (!element) return null;
     
     try {
-      // 使用 html2canvas 截取
       const captureCanvas = await html2canvas(element, {
         scale: dpr,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: null
+        backgroundColor: null,
+        // Bug Fix: 排除涟漪 Canvas 避免递归捕获
+        ignoreElements: (el) => {
+          return el.id === 'ripple-webgl-surface' || el.id === 'ripple-webgl-behind';
+        }
       });
       
       return captureCanvas;
@@ -417,35 +427,40 @@ function initWebGLRipple() {
     if (!captureCanvas) return false;
     
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(
-      gl.TEXTURE_2D, 
-      0, 
-      gl.RGBA, 
-      gl.RGBA, 
-      gl.UNSIGNED_BYTE, 
-      captureCanvas
-    );
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, captureCanvas);
     
     return true;
   }
   
-  // ========== 创建涟漪 ==========
-
+  // ========== Bug Fix: 使用 getComputedStyle 读取 clip-path ==========
+  
   const createRipple = async (x, y) => {
-    console.log('createRipple called:', x, y);
-    
     if (ripples.length >= config.maxRipples) {
       ripples.shift();
     }
     
-    // 判断当前可见世界（通过 clip-path 半径判断）
+    // Bug Fix: 使用 getComputedStyle 读取 CSS 定义的 clip-path
     const behindWorld = document.querySelector('.behind-world');
-    const clipPath = behindWorld?.style.clipPath || '';
-    const radiusMatch = clipPath.match(/circle\((\d+)px/);
-    const portalRadius = radiusMatch ? parseInt(radiusMatch[1]) : 0;
-    const isBehindVisible = portalRadius > 0;
+    let isBehindVisible = false;
     
-    console.log('isBehindVisible:', isBehindVisible, 'portalRadius:', portalRadius);
+    if (behindWorld) {
+      const computedStyle = window.getComputedStyle(behindWorld);
+      const clipPath = computedStyle.clipPath || computedStyle.getPropertyValue('clip-path') || '';
+      
+      // 支持 px 和 % 两种格式
+      const pxMatch = clipPath.match(/circle\((\d+(?:\.\d+)?)px/);
+      const percentMatch = clipPath.match(/circle\((\d+(?:\.\d+)?)%/);
+      
+      let portalRadius = 0;
+      if (pxMatch) {
+        portalRadius = parseFloat(pxMatch[1]);
+      } else if (percentMatch) {
+        const percent = parseFloat(percentMatch[1]);
+        portalRadius = Math.min(canvasWidth, canvasHeight) * percent / 100;
+      }
+      
+      isBehindVisible = portalRadius > 0;
+    }
     
     // 确定要渲染的 Canvas 和 GL Context
     const targetCanvas = isBehindVisible ? behindCanvas : surfaceCanvas;
@@ -454,9 +469,8 @@ function initWebGLRipple() {
     const targetProgram = isBehindVisible ? behindProgram : surfaceProgram;
     const targetUniforms = isBehindVisible ? behindUniforms : surfaceUniforms;
     
-    // 捕获纹理（在设置opacity之前）
+    // 捕获纹理
     const success = await updateTexture(targetGL, targetTexture, isBehindVisible);
-    console.log('Texture capture success:', success);
     
     if (!success) {
       console.warn('纹理捕获失败，涟漪取消');
@@ -465,64 +479,76 @@ function initWebGLRipple() {
     
     // 创建涟漪
     ripples.push(new Ripple(x, y));
-    console.log('Ripple created, ripples count:', ripples.length);
     
-    // 显示 Canvas（纹理捕获成功后）
+    // 显示 Canvas
     targetCanvas.style.opacity = '1';
-    console.log('Canvas opacity set to 1');
     
-    // 启动动画（使用对应的 GL Context）
-    if (!animationId) {
+    // Bug Fix: 使用对应的动画 ID
+    const animationIdRef = isBehindVisible ? 'behindAnimationId' : 'surfaceAnimationId';
+    const currentAnimationId = isBehindVisible ? behindAnimationId : surfaceAnimationId;
+    
+    if (!currentAnimationId) {
       lastTime = performance.now();
-      startAnimation(targetGL, targetProgram, targetUniforms, targetTexture, targetCanvas);
-      console.log('Animation started');
+      startAnimation(targetGL, targetProgram, targetUniforms, targetTexture, targetCanvas, isBehindVisible);
     }
   };
   
-  // 启动动画（使用指定的 GL Context 和 Canvas）
-  const startAnimation = (gl, program, uniforms, texture, canvas) => {
+  // Bug Fix: 传入 isBehind 参数区分动画
+  const startAnimation = (gl, program, uniforms, texture, canvas, isBehind) => {
     const animateLoop = () => {
       const now = performance.now();
       const deltaTime = Math.min((now - lastTime) / 16.67, 3);
       lastTime = now;
       
-      // 更新涟漪
       ripples.forEach(ripple => ripple.update(deltaTime));
       
-      // 移除死亡的涟漪
       for (let i = ripples.length - 1; i >= 0; i--) {
         if (!ripples[i].alive) ripples.splice(i, 1);
       }
       
-      // 渲染
       if (ripples.length > 0) {
         render(gl, program, uniforms, texture);
-        // 确保 Canvas 可见
-        if (canvas.style.opacity !== '1') {
+        if (parseFloat(canvas.style.opacity) < 1) {
           canvas.style.opacity = '1';
         }
-        animationId = requestAnimationFrame(animateLoop);
+        const animationId = requestAnimationFrame(animateLoop);
+        if (isBehind) {
+          behindAnimationId = animationId;
+        } else {
+          surfaceAnimationId = animationId;
+        }
       } else {
-        // 涟漪消失 → 隐藏 Canvas
         canvas.style.opacity = '0';
-        animationId = null;
-        console.log('Animation ended, canvas hidden');
+        if (isBehind) {
+          behindAnimationId = null;
+        } else {
+          surfaceAnimationId = null;
+        }
       }
     };
     
     animateLoop();
   };
   
-  // ========== 点击监听 ==========
+  // ========== 点击监听（添加防抖） ==========
+  
+  let isCapturing = false;
   
   document.addEventListener('click', async (e) => {
-    // 只排除真正的交互元素（链接、按钮、输入框）
-    if (e.target.closest('a, button, input, textarea, [role="button"]')) return;
+    if (e.target.closest('a, button, input, textarea, [role="button"], select, [contenteditable], .nav-toggle')) return;
     
-    await createRipple(e.clientX, e.clientY);
+    // Bug Fix: 防止连续点击导致多次纹理捕获
+    if (isCapturing) return;
+    
+    isCapturing = true;
+    try {
+      await createRipple(e.clientX, e.clientY);
+    } finally {
+      isCapturing = false;
+    }
   });
   
-  console.log('WebGL 涟漪折射系统 v1.0 已初始化');
+  console.log('WebGL 涟漪折射系统 v1.1 已初始化');
   
   // ========== 暴露调试接口 ==========
   
@@ -531,6 +557,8 @@ function initWebGLRipple() {
     ripples,
     createRipple,
     surfaceCanvas,
-    behindCanvas
+    behindCanvas,
+    // 暴露版本信息
+    version: '1.1'
   };
 }
