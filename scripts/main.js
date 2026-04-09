@@ -400,8 +400,8 @@ function parseColor(color) {
   return null;
 }
 
-// 混合两个颜色
-function blendColors(color1, color2, ratio = 0.5) {
+// 混合两个颜色（涟漪色70%，背景色30%）
+function blendColors(color1, color2, ratio = 0.7) {
   if (!color1 || !color2) return color1 || color2;
   
   const r = Math.round(color1.r * ratio + color2.r * (1 - ratio));
