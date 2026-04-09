@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAvatarInteraction();
   initFireflies();
   initCustomCursor();
-  initWebGLRipple();  // WebGL 涟漪折射系统
+  initClickRipple();
 });
 
 /* ========================================
@@ -365,6 +365,149 @@ if (process?.env?.NODE_ENV === 'development') {
    导出（如果需要模块化）
    ======================================== */
 // export { initScrollProgress, initNavScroll, initMobileNav, initScrollAnimations };
+
+/* ========================================
+   点击涟漪效果（全页面）
+   ======================================== */
+
+// 莫兰迪配色系（用于涟漪）
+const RIPPLE_COLOR_FAMILIES = [
+  { name: 'pink', colors: ['#EAD9D4', '#D4C4BC', '#C4A8A0', '#B48C84', '#9A7068'] },
+  { name: 'blue', colors: ['#C4CED2', '#A8B4B8', '#8A9AA0', '#6A7A82', '#4A5A62'] },
+  { name: 'green', colors: ['#BCBEB8', '#9CAA9C', '#7C8A7C', '#5C6A5C', '#3C4A3C'] },
+  { name: 'purple', colors: ['#D8D0D8', '#B8A8B8', '#988898', '#786878', '#584858'] },
+  { name: 'orange', colors: ['#E8D8C8', '#D8C8A8', '#C8B898', '#B8A878', '#988858'] },
+  { name: 'yellow', colors: ['#E8E0D0', '#D8D0B8', '#C8C0A8', '#B8B088', '#989068'] },
+  { name: 'rose', colors: ['#E8D0D8', '#D8B0C0', '#C890A0', '#B87080', '#985060'] }
+];
+
+// 解析颜色为 RGB
+function parseColor(color) {
+  if (!color || color === 'transparent' || color === 'rgba(0, 0, 0, 0)') return null;
+  
+  // 处理 rgb/rgba 格式
+  const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  if (rgbaMatch) {
+    return { r: parseInt(rgbaMatch[1]), g: parseInt(rgbaMatch[2]), b: parseInt(rgbaMatch[3]) };
+  }
+  
+  // 处理 hex 格式
+  const hexMatch = color.match(/^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+  if (hexMatch) {
+    return { r: parseInt(hexMatch[1], 16), g: parseInt(hexMatch[2], 16), b: parseInt(hexMatch[3], 16) };
+  }
+  
+  return null;
+}
+
+// 混合两个颜色（涟漪色70%，背景色30%）
+function blendColors(color1, color2, ratio = 0.7) {
+  if (!color1 || !color2) return color1 || color2;
+  
+  const r = Math.round(color1.r * ratio + color2.r * (1 - ratio));
+  const g = Math.round(color1.g * ratio + color2.g * (1 - ratio));
+  const b = Math.round(color1.b * ratio + color2.b * (1 - ratio));
+  
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+// 获取点击位置元素的颜色
+function getElementColorAt(x, y) {
+  const element = document.elementFromPoint(x, y);
+  if (!element) return null;
+  
+  const computedStyle = window.getComputedStyle(element);
+  
+  // 优先获取文字颜色（如果元素是文字或包含文字）
+  const tagName = element.tagName.toLowerCase();
+  const isTextElement = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'a', 'button', 'label'].includes(tagName);
+  
+  if (isTextElement && computedStyle.color) {
+    const textColor = parseColor(computedStyle.color);
+    if (textColor) return textColor;
+  }
+  
+  // 获取背景色
+  let bgColor = computedStyle.backgroundColor;
+  let currentElement = element;
+  
+  // 如果背景透明，向上查找父元素的背景色
+  while ((!bgColor || bgColor === 'transparent' || bgColor === 'rgba(0, 0, 0, 0)') && currentElement.parentElement) {
+    currentElement = currentElement.parentElement;
+    const parentStyle = window.getComputedStyle(currentElement);
+    bgColor = parentStyle.backgroundColor;
+  }
+  
+  return parseColor(bgColor);
+}
+
+// 获取随机涟漪颜色（同色系80%，跨色系20%）
+function getRippleColors() {
+  const isMonochrome = Math.random() < 0.8; // 80% 同色系
+  
+  if (isMonochrome) {
+    // 同色系渐变：随机选一种颜色系，内亮外暗
+    const family = RIPPLE_COLOR_FAMILIES[Math.floor(Math.random() * RIPPLE_COLOR_FAMILIES.length)];
+    return {
+      layer1: family.colors[2], // 中等亮度
+      layer2: family.colors[1], // 较亮
+      layer3: family.colors[0], // 最亮（中心）
+      type: 'monochrome',
+      family: family.name
+    };
+  } else {
+    // 跨色系混合：每层随机选不同颜色系
+    const shuffled = [...RIPPLE_COLOR_FAMILIES].sort(() => Math.random() - 0.5);
+    return {
+      layer1: shuffled[0].colors[2],
+      layer2: shuffled[1].colors[2],
+      layer3: shuffled[2].colors[2],
+      type: 'multicolor',
+      families: [shuffled[0].name, shuffled[1].name, shuffled[2].name]
+    };
+  }
+}
+
+function initClickRipple() {
+  const surfaceWorld = document.querySelector('.surface-world');
+  if (!surfaceWorld) return;
+
+  surfaceWorld.addEventListener('click', (e) => {
+    // 点击位置（页面坐标，包含滚动）
+    const x = e.pageX;
+    const y = e.pageY;
+    
+    // 获取点击位置元素的颜色
+    const elementColor = getElementColorAt(e.clientX, e.clientY);
+
+    // 获取随机颜色
+    const colors = getRippleColors();
+
+    // 创建三层涟漪
+    for (let i = 0; i < 3; i++) {
+      const ripple = document.createElement('span');
+      ripple.className = `click-ripple r-layer-${i + 1}`;
+      ripple.style.left = `${x}px`;
+      ripple.style.top = `${y}px`;
+      ripple.style.transform = 'translate(-50%, -50%)';
+      
+      // 获取涟漪随机色
+      const rippleColor = parseColor(i === 0 ? colors.layer1 : (i === 1 ? colors.layer2 : colors.layer3));
+      
+      // 混合涟漪颜色和元素颜色（各50%）
+      const finalColor = elementColor && rippleColor 
+        ? blendColors(rippleColor, elementColor, 0.5) 
+        : (rippleColor ? `rgb(${rippleColor.r}, ${rippleColor.g}, ${rippleColor.b})` : colors.layer1);
+      
+      ripple.style.borderColor = finalColor;
+      
+      surfaceWorld.appendChild(ripple);
+
+      // 动画结束后移除
+      ripple.addEventListener('animationend', () => ripple.remove());
+    }
+  });
+}
 
 /* ========================================
    自定义光标系统 + 背后世界窗口
