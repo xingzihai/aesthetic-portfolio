@@ -17,12 +17,12 @@ function initWebGLRipple() {
   // ========== 配置参数 ==========
   const config = {
     maxRipples: 3,
-    maxRadius: 350,
-    expandSpeed: 2.5,
-    waveSpeed: 0.4,
-    frequency: 0.03,
-    maxDisplacement: 8,
-    fadeStart: 0.5
+    maxRadius: 400,          // 增大涟漪半径
+    expandSpeed: 3,          // 加快扩散速度
+    waveSpeed: 0.5,          // 加快波形传播
+    frequency: 0.025,        // 降低频率，波纹更宽
+    maxDisplacement: 25,     // 大幅增强折射效果
+    fadeStart: 0.6
   };
   
   // ========== Shader 源码 ==========
@@ -381,36 +381,10 @@ function initWebGLRipple() {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
   
-  // ========== 动画循环 ==========
+  // ========== 动画状态 ==========
   
   let animationId = null;
   let lastTime = performance.now();
-  
-  const animate = () => {
-    const now = performance.now();
-    const deltaTime = Math.min((now - lastTime) / 16.67, 3);
-    lastTime = now;
-    
-    // 更新涟漪
-    ripples.forEach(ripple => ripple.update(deltaTime));
-    
-    // 移除死亡的涟漪
-    for (let i = ripples.length - 1; i >= 0; i--) {
-      if (!ripples[i].alive) ripples.splice(i, 1);
-    }
-    
-    // 渲染
-    if (ripples.length > 0) {
-      render(surfaceGL, surfaceProgram, surfaceUniforms, surfaceTexture);
-      render(behindGL, behindProgram, behindUniforms, behindTexture);
-      animationId = requestAnimationFrame(animate);
-    } else {
-      // 涟漪消失 → 隐藏 Canvas
-      surfaceCanvas.style.opacity = '0';
-      behindCanvas.style.opacity = '0';
-      animationId = null;
-    }
-  };
   
   // ========== 纹理捕获（html2canvas 集成） ==========
   
@@ -456,8 +430,10 @@ function initWebGLRipple() {
   }
   
   // ========== 创建涟漪 ==========
-  
+
   const createRipple = async (x, y) => {
+    console.log('createRipple called:', x, y);
+    
     if (ripples.length >= config.maxRipples) {
       ripples.shift();
     }
@@ -469,6 +445,8 @@ function initWebGLRipple() {
     const portalRadius = radiusMatch ? parseInt(radiusMatch[1]) : 0;
     const isBehindVisible = portalRadius > 0;
     
+    console.log('isBehindVisible:', isBehindVisible, 'portalRadius:', portalRadius);
+    
     // 确定要渲染的 Canvas 和 GL Context
     const targetCanvas = isBehindVisible ? behindCanvas : surfaceCanvas;
     const targetGL = isBehindVisible ? behindGL : surfaceGL;
@@ -476,30 +454,33 @@ function initWebGLRipple() {
     const targetProgram = isBehindVisible ? behindProgram : surfaceProgram;
     const targetUniforms = isBehindVisible ? behindUniforms : surfaceUniforms;
     
-    // 显示 Canvas
-    targetCanvas.style.opacity = '1';
-    
-    // 捕获纹理
+    // 捕获纹理（在设置opacity之前）
     const success = await updateTexture(targetGL, targetTexture, isBehindVisible);
+    console.log('Texture capture success:', success);
     
     if (!success) {
       console.warn('纹理捕获失败，涟漪取消');
-      targetCanvas.style.opacity = '0';
       return;
     }
     
     // 创建涟漪
     ripples.push(new Ripple(x, y));
+    console.log('Ripple created, ripples count:', ripples.length);
+    
+    // 显示 Canvas（纹理捕获成功后）
+    targetCanvas.style.opacity = '1';
+    console.log('Canvas opacity set to 1');
     
     // 启动动画（使用对应的 GL Context）
     if (!animationId) {
       lastTime = performance.now();
-      startAnimation(targetGL, targetProgram, targetUniforms, targetTexture);
+      startAnimation(targetGL, targetProgram, targetUniforms, targetTexture, targetCanvas);
+      console.log('Animation started');
     }
   };
   
-  // 启动动画（使用指定的 GL Context）
-  const startAnimation = (gl, program, uniforms, texture) => {
+  // 启动动画（使用指定的 GL Context 和 Canvas）
+  const startAnimation = (gl, program, uniforms, texture, canvas) => {
     const animateLoop = () => {
       const now = performance.now();
       const deltaTime = Math.min((now - lastTime) / 16.67, 3);
@@ -516,12 +497,16 @@ function initWebGLRipple() {
       // 渲染
       if (ripples.length > 0) {
         render(gl, program, uniforms, texture);
+        // 确保 Canvas 可见
+        if (canvas.style.opacity !== '1') {
+          canvas.style.opacity = '1';
+        }
         animationId = requestAnimationFrame(animateLoop);
       } else {
         // 涟漪消失 → 隐藏 Canvas
-        surfaceCanvas.style.opacity = '0';
-        behindCanvas.style.opacity = '0';
+        canvas.style.opacity = '0';
         animationId = null;
+        console.log('Animation ended, canvas hidden');
       }
     };
     
@@ -531,11 +516,8 @@ function initWebGLRipple() {
   // ========== 点击监听 ==========
   
   document.addEventListener('click', async (e) => {
-    // 排除交互元素
-    if (e.target.closest(
-      'a, button, .nav-toggle, input, textarea, [role="button"], ' +
-      '.gallery-card, .skill-card, .philosophy-block, .card'
-    )) return;
+    // 只排除真正的交互元素（链接、按钮、输入框）
+    if (e.target.closest('a, button, input, textarea, [role="button"]')) return;
     
     await createRipple(e.clientX, e.clientY);
   });

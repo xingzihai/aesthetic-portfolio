@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAvatarInteraction();
   initFireflies();
   initCustomCursor();
-  initRippleRefraction();  // 涟漪折射系统
+  initWebGLRipple();  // WebGL 涟漪折射系统
 });
 
 /* ========================================
