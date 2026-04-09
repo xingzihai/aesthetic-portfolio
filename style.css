@@ -1613,10 +1613,10 @@ body {
 .click-ripple {
   position: absolute;
   border-radius: 50%;
-  border: 2px solid var(--monet-water);
+  border: 3px solid var(--monet-water);
   pointer-events: none;
-  opacity: 0;
-  z-index: 9998;
+  opacity: 0.9;
+  z-index: 9999;
 }
 
 .click-ripple.r-layer-1 {
