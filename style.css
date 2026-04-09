@@ -1617,6 +1617,7 @@ body {
   pointer-events: none;
   opacity: 0.9;
   z-index: 9999;
+  /* 涟漪修复 v2 - 确保 opacity 立即可见 */
 }
 
 .click-ripple.r-layer-1 {
