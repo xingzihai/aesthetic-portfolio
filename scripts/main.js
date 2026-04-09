@@ -369,6 +369,45 @@ if (process?.env?.NODE_ENV === 'development') {
 /* ========================================
    点击涟漪效果（全页面）
    ======================================== */
+
+// 莫兰迪配色系（用于涟漪）
+const RIPPLE_COLOR_FAMILIES = [
+  { name: 'pink', colors: ['#EAD9D4', '#D4C4BC', '#C4A8A0', '#B48C84', '#9A7068'] },
+  { name: 'blue', colors: ['#C4CED2', '#A8B4B8', '#8A9AA0', '#6A7A82', '#4A5A62'] },
+  { name: 'green', colors: ['#BCBEB8', '#9CAA9C', '#7C8A7C', '#5C6A5C', '#3C4A3C'] },
+  { name: 'purple', colors: ['#D8D0D8', '#B8A8B8', '#988898', '#786878', '#584858'] },
+  { name: 'orange', colors: ['#E8D8C8', '#D8C8A8', '#C8B898', '#B8A878', '#988858'] },
+  { name: 'yellow', colors: ['#E8E0D0', '#D8D0B8', '#C8C0A8', '#B8B088', '#989068'] },
+  { name: 'rose', colors: ['#E8D0D8', '#D8B0C0', '#C890A0', '#B87080', '#985060'] }
+];
+
+// 获取随机涟漪颜色（同色系80%，跨色系20%）
+function getRippleColors() {
+  const isMonochrome = Math.random() < 0.8; // 80% 同色系
+  
+  if (isMonochrome) {
+    // 同色系渐变：随机选一种颜色系，内亮外暗
+    const family = RIPPLE_COLOR_FAMILIES[Math.floor(Math.random() * RIPPLE_COLOR_FAMILIES.length)];
+    return {
+      layer1: family.colors[2], // 中等亮度
+      layer2: family.colors[1], // 较亮
+      layer3: family.colors[0], // 最亮（中心）
+      type: 'monochrome',
+      family: family.name
+    };
+  } else {
+    // 跨色系混合：每层随机选不同颜色系
+    const shuffled = [...RIPPLE_COLOR_FAMILIES].sort(() => Math.random() - 0.5);
+    return {
+      layer1: shuffled[0].colors[2],
+      layer2: shuffled[1].colors[2],
+      layer3: shuffled[2].colors[2],
+      type: 'multicolor',
+      families: [shuffled[0].name, shuffled[1].name, shuffled[2].name]
+    };
+  }
+}
+
 function initClickRipple() {
   const surfaceWorld = document.querySelector('.surface-world');
   if (!surfaceWorld) return;
@@ -378,6 +417,9 @@ function initClickRipple() {
     const x = e.pageX;
     const y = e.pageY;
 
+    // 获取随机颜色
+    const colors = getRippleColors();
+
     // 创建三层涟漪
     for (let i = 0; i < 3; i++) {
       const ripple = document.createElement('span');
@@ -385,6 +427,11 @@ function initClickRipple() {
       ripple.style.left = `${x}px`;
       ripple.style.top = `${y}px`;
       ripple.style.transform = 'translate(-50%, -50%)';
+      
+      // 设置颜色
+      const color = i === 0 ? colors.layer1 : (i === 1 ? colors.layer2 : colors.layer3);
+      ripple.style.borderColor = color;
+      
       surfaceWorld.appendChild(ripple);
 
       // 动画结束后移除
