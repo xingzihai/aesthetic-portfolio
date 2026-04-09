@@ -381,6 +381,66 @@ const RIPPLE_COLOR_FAMILIES = [
   { name: 'rose', colors: ['#E8D0D8', '#D8B0C0', '#C890A0', '#B87080', '#985060'] }
 ];
 
+// 解析颜色为 RGB
+function parseColor(color) {
+  if (!color || color === 'transparent' || color === 'rgba(0, 0, 0, 0)') return null;
+  
+  // 处理 rgb/rgba 格式
+  const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  if (rgbaMatch) {
+    return { r: parseInt(rgbaMatch[1]), g: parseInt(rgbaMatch[2]), b: parseInt(rgbaMatch[3]) };
+  }
+  
+  // 处理 hex 格式
+  const hexMatch = color.match(/^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+  if (hexMatch) {
+    return { r: parseInt(hexMatch[1], 16), g: parseInt(hexMatch[2], 16), b: parseInt(hexMatch[3], 16) };
+  }
+  
+  return null;
+}
+
+// 混合两个颜色
+function blendColors(color1, color2, ratio = 0.5) {
+  if (!color1 || !color2) return color1 || color2;
+  
+  const r = Math.round(color1.r * ratio + color2.r * (1 - ratio));
+  const g = Math.round(color1.g * ratio + color2.g * (1 - ratio));
+  const b = Math.round(color1.b * ratio + color2.b * (1 - ratio));
+  
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+// 获取点击位置元素的颜色
+function getElementColorAt(x, y) {
+  const element = document.elementFromPoint(x, y);
+  if (!element) return null;
+  
+  const computedStyle = window.getComputedStyle(element);
+  
+  // 优先获取文字颜色（如果元素是文字或包含文字）
+  const tagName = element.tagName.toLowerCase();
+  const isTextElement = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'a', 'button', 'label'].includes(tagName);
+  
+  if (isTextElement && computedStyle.color) {
+    const textColor = parseColor(computedStyle.color);
+    if (textColor) return textColor;
+  }
+  
+  // 获取背景色
+  let bgColor = computedStyle.backgroundColor;
+  let currentElement = element;
+  
+  // 如果背景透明，向上查找父元素的背景色
+  while ((!bgColor || bgColor === 'transparent' || bgColor === 'rgba(0, 0, 0, 0)') && currentElement.parentElement) {
+    currentElement = currentElement.parentElement;
+    const parentStyle = window.getComputedStyle(currentElement);
+    bgColor = parentStyle.backgroundColor;
+  }
+  
+  return parseColor(bgColor);
+}
+
 // 获取随机涟漪颜色（同色系80%，跨色系20%）
 function getRippleColors() {
   const isMonochrome = Math.random() < 0.8; // 80% 同色系
@@ -416,6 +476,9 @@ function initClickRipple() {
     // 点击位置（页面坐标，包含滚动）
     const x = e.pageX;
     const y = e.pageY;
+    
+    // 获取点击位置元素的颜色
+    const elementColor = getElementColorAt(e.clientX, e.clientY);
 
     // 获取随机颜色
     const colors = getRippleColors();
@@ -428,9 +491,15 @@ function initClickRipple() {
       ripple.style.top = `${y}px`;
       ripple.style.transform = 'translate(-50%, -50%)';
       
-      // 设置颜色
-      const color = i === 0 ? colors.layer1 : (i === 1 ? colors.layer2 : colors.layer3);
-      ripple.style.borderColor = color;
+      // 获取涟漪随机色
+      const rippleColor = parseColor(i === 0 ? colors.layer1 : (i === 1 ? colors.layer2 : colors.layer3));
+      
+      // 混合涟漪颜色和元素颜色（各50%）
+      const finalColor = elementColor && rippleColor 
+        ? blendColors(rippleColor, elementColor, 0.5) 
+        : (rippleColor ? `rgb(${rippleColor.r}, ${rippleColor.g}, ${rippleColor.b})` : colors.layer1);
+      
+      ripple.style.borderColor = finalColor;
       
       surfaceWorld.appendChild(ripple);
 
