@@ -379,6 +379,7 @@ if (process?.env?.NODE_ENV === 'development') {
    ======================================== */
 
 // 莫兰迪配色系（用于涟漪）
+// 强制更新 2026-04-09 v2
 const RIPPLE_COLOR_FAMILIES = [
   { name: 'pink', colors: ['#EAD9D4', '#D4C4BC', '#C4A8A0', '#B48C84', '#9A7068'] },
   { name: 'blue', colors: ['#C4CED2', '#A8B4B8', '#8A9AA0', '#6A7A82', '#4A5A62'] },
