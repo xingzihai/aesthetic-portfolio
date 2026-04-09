@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAvatarInteraction();
   initFireflies();
   initCustomCursor();
+  initClickRipple();
 });
 
 /* ========================================
@@ -364,6 +365,33 @@ if (process?.env?.NODE_ENV === 'development') {
    导出（如果需要模块化）
    ======================================== */
 // export { initScrollProgress, initNavScroll, initMobileNav, initScrollAnimations };
+
+/* ========================================
+   点击涟漪效果（全页面）
+   ======================================== */
+function initClickRipple() {
+  const surfaceWorld = document.querySelector('.surface-world');
+  if (!surfaceWorld) return;
+
+  surfaceWorld.addEventListener('click', (e) => {
+    // 点击位置（页面坐标，包含滚动）
+    const x = e.pageX;
+    const y = e.pageY;
+
+    // 创建三层涟漪
+    for (let i = 0; i < 3; i++) {
+      const ripple = document.createElement('span');
+      ripple.className = `click-ripple r-layer-${i + 1}`;
+      ripple.style.left = `${x}px`;
+      ripple.style.top = `${y}px`;
+      ripple.style.transform = 'translate(-50%, -50%)';
+      surfaceWorld.appendChild(ripple);
+
+      // 动画结束后移除
+      ripple.addEventListener('animationend', () => ripple.remove());
+    }
+  });
+}
 
 /* ========================================
    自定义光标系统 + 背后世界窗口

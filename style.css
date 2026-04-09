@@ -1540,7 +1540,7 @@ body {
 }
 
 /* ========================================
-   涟漪动态
+   涟漪动态（自动播放）
    ======================================== */
 .ripple-demo {
   width: 100%;
@@ -1572,6 +1572,91 @@ body {
   100% {
     width: 80px;
     height: 80px;
+    opacity: 0;
+  }
+}
+
+/* ========================================
+   点击涟漪效果（全页面）
+   ======================================== */
+.click-ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid var(--monet-water);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 9998;
+}
+
+.click-ripple.r-layer-1 {
+  animation: ripple-layer-1 1.5s ease-out forwards;
+  animation-delay: 0s;
+}
+.click-ripple.r-layer-2 {
+  animation: ripple-layer-2 1.5s ease-out forwards;
+  animation-delay: 0.15s;
+}
+.click-ripple.r-layer-3 {
+  animation: ripple-layer-3 1.5s ease-out forwards;
+  animation-delay: 0.3s;
+}
+
+/* 第一层：扩散最快，范围最大 */
+@keyframes ripple-layer-1 {
+  0% {
+    width: 10px;
+    height: 10px;
+    opacity: 0.8;
+  }
+  30% {
+    opacity: 0.6;
+  }
+  60% {
+    opacity: 0.3;
+  }
+  100% {
+    width: 250px;
+    height: 250px;
+    opacity: 0;
+  }
+}
+
+/* 第二层：扩散中等，范围中等 */
+@keyframes ripple-layer-2 {
+  0% {
+    width: 10px;
+    height: 10px;
+    opacity: 0.8;
+  }
+  30% {
+    opacity: 0.6;
+  }
+  60% {
+    opacity: 0.3;
+  }
+  100% {
+    width: 180px;
+    height: 180px;
+    opacity: 0;
+  }
+}
+
+/* 第三层：扩散最慢，范围最小 */
+@keyframes ripple-layer-3 {
+  0% {
+    width: 10px;
+    height: 10px;
+    opacity: 0.8;
+  }
+  30% {
+    opacity: 0.6;
+  }
+  60% {
+    opacity: 0.3;
+  }
+  100% {
+    width: 120px;
+    height: 120px;
     opacity: 0;
   }
 }
